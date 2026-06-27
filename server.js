@@ -16,6 +16,15 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
 });
 
+// Test connection on startup
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Database connection failed:', err.message);
+  } else {
+    console.error('Database connected successfully at:', res.rows[0].now);
+  }
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
