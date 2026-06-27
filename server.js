@@ -10,8 +10,28 @@ const PORT = process.env.PORT || 3000;
 // ===== PostgreSQL Database Setup =====
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost/merindu',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
+
+// Wait for database to be ready
+async function waitForDB(maxAttempts = 30) {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      const client = await pool.connect();
+      client.release();
+      console.log('Database connected successfully');
+      return true;
+    } catch (err) {
+      console.log(`Database connection attempt ${i + 1}/${maxAttempts} failed, retrying...`);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  console.error('Could not connect to database after max attempts');
+  return false;
+}
 
 // Session store with PostgreSQL
 app.use(cors());
@@ -623,6 +643,17 @@ app.post('/api/admin/logout', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => {
-  console.log(`Merindu Donat Membership running on http://localhost:${PORT}`);
-});
+// Start server only after database is ready
+async function start() {
+  const dbReady = await waitForDB();
+  if (!dbReady) {
+    console.error('Failed to connect to database');
+    process.exit(1);
+  }
+  
+  app.listen(PORT, () => {
+    console.log(`Merindu Donat Membership running on http://localhost:${PORT}`);
+  });
+}
+
+start();
