@@ -491,6 +491,26 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
         <button class="tab" id="atab-redeem" style="flex:1;" onclick="aHisTab('redeem')">Redeem</button>
       </div>
     </div>
+    <div id="a-his-summary" style="display:none" class="preview"></div>
+    <div class="card" id="a-his-list"></div>
+  </div>
+
+  <!-- Setting -->
+  <div id="apanel-s" style="display:none">
+    <div class="card">
+      <div style="text-align:center;padding:20px;color:var(--muted);">Setting akan ditambahkan di versi selanjutnya</div>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+  <button class="btn btn-secondary" onclick="logoutAdmin()">Keluar</button>
+</div>
+
+<script src="api-integration.js"></script>
+</body>
+</html>redeem')">Redeem</button>
+      </div>
+    </div>
     <div id="a-audit-summary" style="display:none" class="preview"></div>
     <div class="card" id="a-audit-list"></div>
   </div>
@@ -1132,13 +1152,19 @@ async function renderRiwayatKaryawan() {
     await loadKaryawanMembers();
 
     // Fetch transactions from API
+    console.log('[RENDER RIWAYAT KARYAWAN] Fetching from /api/karyawan/transactions');
     const res = await fetch('/api/karyawan/transactions', {
       credentials: 'include'
     });
 
-    if (!res.ok) throw new Error('Gagal memuat riwayat');
+    console.log('[RENDER RIWAYAT KARYAWAN] Response status:', res.status);
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || 'Gagal memuat riwayat');
+    }
 
     let rows = await res.json();
+    console.log('[RENDER RIWAYAT KARYAWAN] Got', rows.length, 'rows');
 
     // Filter by member if specified
     if (memberFilter) {
@@ -1191,6 +1217,7 @@ async function renderRiwayatKaryawan() {
       '</div>';
     }).join('');
   } catch (err) {
+    console.error('[RENDER RIWAYAT KARYAWAN] Error:', err);
     el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--pink);font-size:13px;">' + err.message + '</div>';
   }
 }
