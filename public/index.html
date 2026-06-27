@@ -1055,24 +1055,44 @@ function renderDashboard() {
 // ============================================================
 // KARYAWAN LOGIN / LOGOUT
 // ============================================================
-function loginKaryawan() {
-  var u = document.getElementById('lk-user').value.trim();
-  var p = document.getElementById('lk-pass').value.trim();
-  var k = DB.karyawan[u];
-  if (!k || k.pass !== p) { toast('Username atau password salah'); return; }
-  curKaryawan = u;
-  saveSession();
-  document.getElementById('k-label').textContent = k.nama;
-  document.getElementById('tx-tgl').value = todayStr();
-  resetFormTx();
-  resetFormRdm();
-  kTab('tx');
-  showPage('karyawan');
+// KARYAWAN LOGIN / LOGOUT
+// ============================================================
+async function loginKaryawan() {
+  const username = document.getElementById('lk-user').value.trim();
+  const password = document.getElementById('lk-pass').value.trim();
+
+  if (!username || !password) {
+    toast('Masukkan username dan password');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/karyawan/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    toast('Login berhasil!');
+    document.getElementById('lk-user').value = '';
+    document.getElementById('lk-pass').value = '';
+    document.getElementById('k-label').textContent = 'Halo, ' + data.user.nama + '!';
+    document.getElementById('tx-tgl').value = todayStr();
+    resetFormTx();
+    resetFormRdm();
+    kTab('tx');
+    showPage('karyawan');
+  } catch (err) {
+    toast(err.message || 'Login gagal');
+  }
 }
 
 function logoutKaryawan() {
-  curKaryawan = null;
-  saveSession();
+  fetch('/api/karyawan/logout', { method: 'POST', credentials: 'include' });
   showPage('landing');
 }
 
