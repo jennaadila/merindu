@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
-const SessionStore = require('better-sqlite3-session-store')(session);
 const Database = require('better-sqlite3');
 
 const app = express();
@@ -11,23 +10,17 @@ const PORT = process.env.PORT || 3000;
 // ===== SQLite Database Setup =====
 const db = new Database('membership.db');
 
-// Session store
-const sessionDB = new Database('sessions.db');
-const store = new SessionStore({
-  client: sessionDB
-});
-
-// ===== Middleware =====
+// Session store - Using memory store (simple)
+// Sessions will be stored in memory on Railway
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use(session({
-  store: store,
   secret: process.env.SESSION_SECRET || 'merindu-membership-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: false, // set to true if using HTTPS
+    secure: false,
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   }
 }));
