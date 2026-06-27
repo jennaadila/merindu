@@ -1119,61 +1119,104 @@ function kHisTab(t) {
   renderRiwayatKaryawan();
 }
 
-function renderRiwayatKaryawan() {
-  var customDari   = document.getElementById('k-tgl-dari')   ? document.getElementById('k-tgl-dari').value   : '';
-  var customSampai = document.getElementById('k-tgl-sampai') ? document.getElementById('k-tgl-sampai').value : '';
-  var range        = getDateRange(kRange, customDari, customSampai);
-  var namaKary     = DB.karyawan[curKaryawan] ? DB.karyawan[curKaryawan].nama : '';
-  var memberFilter = document.getElementById('k-member-select') ? document.getElementById('k-member-select').value : '';
-  var el           = document.getElementById('k-his-list');
-  var sumEl        = document.getElementById('k-his-summary');
+async function renderRiwayatKaryawan() {
+  const customDari = document.getElementById('k-tgl-dari')?.value || '';
+  const customSampai = document.getElementById('k-tgl-sampai')?.value || '';
+  const range = getDateRange(kRange, customDari, customSampai);
+  const memberFilter = document.getElementById('k-member-select')?.value || '';
+  const el = document.getElementById('k-his-list');
+  const sumEl = document.getElementById('k-his-summary');
 
-  // Populate dropdown
-  buildMemberSelect('k-member-select', renderRiwayatKaryawan);
+  try {
+    // Populate member select
+    await loadKaryawanMembers();
 
-  var rows = [];
-  Object.entries(DB.members).forEach(function(e) {
-    var mId = e[0]; var m = e[1];
-    if (memberFilter && mId !== memberFilter) return;
-    m.tx.forEach(function(tx) {
-      if (tx.kary === namaKary && inRange(tx.tgl, range.dari, range.sampai)) {
-        rows.push(Object.assign({}, tx, { memberId: mId, memberNama: m.nama }));
-      }
+    // Fetch transactions from API
+    const res = await fetch('/api/karyawan/transactions', {
+      credentials: 'include'
     });
-  });
 
-  if (kHisFilter !== 'all') rows = rows.filter(function(r) { return r.tipe === kHisFilter; });
-  rows.sort(function(a, b) { return (b.tgl + (b.waktu||'')).localeCompare(a.tgl + (a.waktu||'')); });
+    if (!res.ok) throw new Error('Gagal memuat riwayat');
 
-  if (rows.length) {
-    var jmlTambah = rows.filter(function(r){ return r.tipe==='tambah'; }).length;
-    var jmlRedeem = rows.filter(function(r){ return r.tipe==='redeem'; }).length;
-    var ttlPoin   = rows.filter(function(r){ return r.tipe==='tambah'; }).reduce(function(s,r){ return s+r.poin; }, 0);
-    sumEl.style.display = 'block';
-    sumEl.innerHTML =
-      '<div class="preview-row"><span>Transaksi masuk</span><span class="val">' + jmlTambah + '</span></div>' +
-      '<div class="preview-row"><span>Redeem diproses</span><span class="val">' + jmlRedeem + '</span></div>' +
-      '<div class="preview-row"><span>Total poin ditambah</span><span class="val">+' + ttlPoin + '</span></div>';
-  } else { sumEl.style.display = 'none'; }
+    let rows = await res.json();
 
-  if (!rows.length) {
-    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
-    return;
+    // Filter by member if specified
+    if (memberFilter) {
+      rows = rows.filter(r => r.memberId === memberFilter);
+    }
+
+    // Filter by date range
+    rows = rows.filter(r => inRange(r.tgl, range.dari, range.sampai));
+
+    // Filter by type
+    if (kHisFilter !== 'all') {
+      rows = rows.filter(r => r.tipe === kHisFilter);
+    }
+
+    // Sort by date descending
+    rows.sort((a, b) => (b.tgl + (b.waktu || '')).localeCompare(a.tgl + (a.waktu || '')));
+
+    // Display summary
+    if (rows.length) {
+      const jmlTambah = rows.filter(r => r.tipe === 'tambah').length;
+      const jmlRedeem = rows.filter(r => r.tipe === 'redeem').length;
+      const ttlPoin = rows.filter(r => r.tipe === 'tambah').reduce((s, r) => s + r.poin, 0);
+      sumEl.style.display = 'block';
+      sumEl.innerHTML =
+        '<div class="preview-row"><span>Transaksi masuk</span><span class="val">' + jmlTambah + '</span></div>' +
+        '<div class="preview-row"><span>Redeem diproses</span><span class="val">' + jmlRedeem + '</span></div>' +
+        '<div class="preview-row"><span>Total poin ditambah</span><span class="val">+' + ttlPoin + '</span></div>';
+    } else {
+      sumEl.style.display = 'none';
+    }
+
+    // Display transactions
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
+      return;
+    }
+
+    el.innerHTML = rows.map(r => {
+      const isR = r.tipe === 'redeem';
+      const badge = isR
+        ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
+        : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
+      return '<div class="tx">' +
+        '<div class="tx-info">' +
+          '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
+          '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' ' + r.waktu : '') + '</div>' +
+          '<div class="tx-nom">' + (isR ? (r.ket || 'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
+        '</div>' +
+        '<div class="tx-poin' + (isR ? ' minus' : '') + '">' + (isR ? '−' : '+') + Math.abs(r.poin) + '</div>' +
+      '</div>';
+    }).join('');
+  } catch (err) {
+    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--pink);font-size:13px;">' + err.message + '</div>';
   }
-  el.innerHTML = rows.map(function(r) {
-    var isR   = r.tipe === 'redeem';
-    var badge = isR
-      ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
-      : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
-    return '<div class="tx">' +
-      '<div class="tx-info">' +
-        '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
-        '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' ' + r.waktu : '') + '</div>' +
-        '<div class="tx-nom">' + (isR ? (r.ket||'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
-      '</div>' +
-      '<div class="tx-poin' + (isR?' minus':'') + '">' + (isR?'−':'+') + Math.abs(r.poin) + '</div>' +
-    '</div>';
-  }).join('');
+}
+
+async function loadKaryawanMembers() {
+  try {
+    const res = await fetch('/api/karyawan/members', {
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Gagal memuat member');
+    const members = await res.json();
+    const select = document.getElementById('k-member-select');
+    if (select) {
+      const current = select.value;
+      select.innerHTML = '<option value="">— Semua Member —</option>';
+      members.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.nama;
+        select.appendChild(opt);
+      });
+      select.value = current;
+    }
+  } catch (err) {
+    console.error('loadKaryawanMembers:', err);
+  }
 }
 
 // ============================================================
@@ -1233,102 +1276,185 @@ function resetFormRdm() {
   document.getElementById('rdm-hadiah-list').style.display = 'none';
 }
 
-function cariMemberRdm() {
-  var id   = document.getElementById('rdm-id').value.trim();
-  var m    = DB.members[id];
-  var infoEl = document.getElementById('rdm-member-info');
-  var nfEl   = document.getElementById('rdm-not-found');
-  var hadEl  = document.getElementById('rdm-hadiah-list');
+async function cariMemberRdm() {
+  const id = document.getElementById('rdm-id').value.trim();
+  const infoEl = document.getElementById('rdm-member-info');
+  const nfEl = document.getElementById('rdm-not-found');
+  const hadEl = document.getElementById('rdm-hadiah-list');
 
-  if (!id) { toast('Masukkan nomor HP dulu'); return; }
+  if (!id) {
+    toast('Masukkan nomor HP');
+    return;
+  }
 
-  if (m) {
-    infoEl.innerHTML =
-      '<div class="preview-row"><span>Nama</span><span class="val">' + m.nama + '</span></div>' +
-      '<div class="preview-row"><span>Poin saat ini</span><span class="val">' + m.poin + ' poin</span></div>' +
-      '<div class="preview-row"><span>Tier</span><span class="val">' + getTier(m.poin).label + '</span></div>';
+  try {
+    const res = await fetch(`/api/karyawan/search-member/${id}`, {
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      infoEl.style.display = 'none';
+      nfEl.style.display = 'block';
+      hadEl.style.display = 'none';
+      return;
+    }
+
+    const member = await res.json();
+    const tier = getTier(member.poin);
+
+    infoEl.innerHTML = `
+      <div class="preview-row"><span>Nama</span><span class="val">${member.nama}</span></div>
+      <div class="preview-row"><span>Poin saat ini</span><span class="val">${member.poin} poin</span></div>
+      <div class="preview-row"><span>Tier</span><span class="val">${tier.label}</span></div>
+    `;
     infoEl.style.display = 'block';
-    nfEl.style.display   = 'none';
-    renderHadiahUntukRdm(id);
+    nfEl.style.display = 'none';
+
+    await renderHadiahUntukRdm(id);
     hadEl.style.display = 'block';
-  } else {
+  } catch (err) {
     infoEl.style.display = 'none';
-    nfEl.style.display   = 'block';
-    hadEl.style.display  = 'none';
+    nfEl.style.display = 'block';
+    hadEl.style.display = 'none';
   }
 }
 
-function renderHadiahUntukRdm(memberId) {
-  var m      = DB.members[memberId];
-  var hadEl  = document.getElementById('rdm-hadiah-list');
-  var colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-  var icons  = ['🍩', '💸', '🎁', '⭐', '🎀'];
-
-  var html = '<div class="clabel" style="margin-top:4px;margin-bottom:8px;">Pilih Hadiah</div>';
-
-  for (var i = 0; i < DB.hadiah.length; i++) {
-    var h      = DB.hadiah[i];
-    var cukup  = m.poin >= h.poin;
-    var color  = colors[i % colors.length];
-    var icon   = icons[i % icons.length];
-
-    html += '<div class="hadiah-card ' + color + (cukup ? ' clickable' : ' disabled') + '" ' +
-              'data-id="' + h.id + '" data-member="' + memberId + '">' +
-              '<div class="hadiah-judul">' + icon + ' ' + h.nama + '</div>' +
-              '<div class="hadiah-desc">' + h.desc + '</div>' +
-              '<div class="hadiah-footer">' +
-                '<div class="hadiah-poin">' + h.poin + ' poin</div>' +
-                (!cukup ? '<div class="hadiah-warn">Poin tidak cukup</div>' : '') +
-              '</div>' +
-            '</div>';
-  }
-
-  hadEl.innerHTML = html;
-
-  var cards = hadEl.querySelectorAll('.hadiah-card.clickable');
-  for (var j = 0; j < cards.length; j++) {
-    cards[j].addEventListener('click', function() {
-      var hadiahId = parseInt(this.getAttribute('data-id'));
-      var mId      = this.getAttribute('data-member');
-      prosesRedeem(hadiahId, mId);
+async function renderHadiahUntukRdm(memberId) {
+  try {
+    const memberRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
+      credentials: 'include'
     });
+
+    if (!memberRes.ok) {
+      toast('Member tidak ditemukan');
+      return;
+    }
+
+    const member = await memberRes.json();
+
+    const hadiahRes = await fetch('/api/hadiah', {
+      credentials: 'include'
+    });
+
+    if (!hadiahRes.ok) throw new Error('Gagal memuat hadiah');
+
+    const hadiahList = await hadiahRes.json();
+    const hadEl = document.getElementById('rdm-hadiah-list');
+    const colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
+    const icons = ['🍩', '💸', '🎁', '⭐', '🎀'];
+
+    let html = '<div class="clabel" style="margin-top:4px;margin-bottom:8px;">Pilih Hadiah</div>';
+
+    hadiahList.forEach((h, i) => {
+      const cukup = member.poin >= h.poin;
+      const color = colors[i % colors.length];
+      const icon = icons[i % icons.length];
+
+      html += '<div class="hadiah-card ' + color + (cukup ? ' clickable' : ' disabled') + '" ' +
+        'data-id="' + h.id + '" data-member="' + memberId + '">' +
+        '<div class="hadiah-judul">' + icon + ' ' + h.nama + '</div>' +
+        '<div class="hadiah-desc">' + h.desc + '</div>' +
+        '<div class="hadiah-footer">' +
+          '<div class="hadiah-poin">' + h.poin + ' poin</div>' +
+          (!cukup ? '<div class="hadiah-warn">Poin tidak cukup</div>' : '') +
+        '</div>' +
+      '</div>';
+    });
+
+    hadEl.innerHTML = html;
+
+    const cards = hadEl.querySelectorAll('.hadiah-card.clickable');
+    cards.forEach(card => {
+      card.addEventListener('click', function() {
+        const hadiahId = parseInt(this.getAttribute('data-id'));
+        const mId = this.getAttribute('data-member');
+        prosesRedeem(hadiahId, mId);
+      });
+    });
+  } catch (err) {
+    toast(err.message || 'Gagal memuat hadiah');
   }
 }
 
-function prosesRedeem(hadiahId, memberId) {
-  var m = DB.members[memberId];
-  var h = null;
-  for (var i = 0; i < DB.hadiah.length; i++) {
-    if (DB.hadiah[i].id === hadiahId) { h = DB.hadiah[i]; break; }
-  }
-
-  if (!m || !h) { toast('Data tidak ditemukan'); return; }
-  if (m.poin < h.poin) { toast('Poin tidak cukup'); return; }
-
-  var bodyHTML =
-    '<div class="alert alert-warn" style="margin-bottom:12px;">Pastikan struk fisik sudah dicek sebelum melanjutkan.</div>' +
-    '<div class="preview">' +
-    '<div class="preview-row"><span>Member</span><span class="val">' + m.nama + '</span></div>' +
-    '<div class="preview-row"><span>Hadiah</span><span class="val">' + h.nama + '</span></div>' +
-    '<div class="preview-row"><span>Poin dipotong</span><span class="val">−' + h.poin + ' poin</span></div>' +
-    '<div class="preview-row"><span>Sisa poin</span><span class="val">' + (m.poin - h.poin) + ' poin</span></div>' +
-    '</div>';
-
-  showModal('Konfirmasi Penukaran Poin', bodyHTML, function() {
-    m.poin -= h.poin;
-    m.tx.push({
-      tgl: todayStr(), waktu: nowTime(), nominal: 0,
-      poin: -h.poin, tipe: 'redeem',
-      ket: h.nama, kary: DB.karyawan[curKaryawan].nama
+async function prosesRedeem(hadiahId, memberId) {
+  try {
+    // Get member info
+    const memberRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
+      credentials: 'include'
     });
-    toast('Redeem berhasil: ' + h.nama);
-    var infoEl = document.getElementById('rdm-member-info');
-    infoEl.innerHTML =
-      '<div class="preview-row"><span>Nama</span><span class="val">' + m.nama + '</span></div>' +
-      '<div class="preview-row"><span>Poin saat ini</span><span class="val">' + m.poin + ' poin</span></div>' +
-      '<div class="preview-row"><span>Tier</span><span class="val">' + getTier(m.poin).label + '</span></div>';
-    renderHadiahUntukRdm(memberId);
-  });
+
+    if (!memberRes.ok) {
+      toast('Member tidak ditemukan');
+      return;
+    }
+
+    const member = await memberRes.json();
+
+    // Get hadiah list
+    const hadiahRes = await fetch('/api/hadiah', {
+      credentials: 'include'
+    });
+
+    if (!hadiahRes.ok) throw new Error('Gagal memuat hadiah');
+
+    const hadiahList = await hadiahRes.json();
+    const hadiah = hadiahList.find(h => h.id === hadiahId);
+
+    if (!hadiah) {
+      toast('Hadiah tidak ditemukan');
+      return;
+    }
+
+    if (member.poin < hadiah.poin) {
+      toast('Poin tidak cukup');
+      return;
+    }
+
+    const bodyHTML =
+      '<div class="alert alert-warn" style="margin-bottom:12px;">Pastikan struk fisik sudah dicek sebelum melanjutkan.</div>' +
+      '<div class="preview">' +
+      '<div class="preview-row"><span>Member</span><span class="val">' + member.nama + '</span></div>' +
+      '<div class="preview-row"><span>Hadiah</span><span class="val">' + hadiah.nama + '</span></div>' +
+      '<div class="preview-row"><span>Poin dipotong</span><span class="val">−' + hadiah.poin + ' poin</span></div>' +
+      '<div class="preview-row"><span>Sisa poin</span><span class="val">' + (member.poin - hadiah.poin) + ' poin</span></div>' +
+      '</div>';
+
+    showModal('Konfirmasi Penukaran Poin', bodyHTML, async () => {
+      try {
+        const redeemRes = await fetch('/api/karyawan/redeem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ memberId, hadiahId })
+        });
+
+        const data = await redeemRes.json();
+        if (!redeemRes.ok) throw new Error(data.error);
+
+        toast('Redeem berhasil: ' + hadiah.nama);
+
+        // Refresh member info
+        const refreshRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
+          credentials: 'include'
+        });
+
+        if (refreshRes.ok) {
+          const refreshedMember = await refreshRes.json();
+          const infoEl = document.getElementById('rdm-member-info');
+          const tier = getTier(refreshedMember.poin);
+          infoEl.innerHTML =
+            '<div class="preview-row"><span>Nama</span><span class="val">' + refreshedMember.nama + '</span></div>' +
+            '<div class="preview-row"><span>Poin saat ini</span><span class="val">' + refreshedMember.poin + ' poin</span></div>' +
+            '<div class="preview-row"><span>Tier</span><span class="val">' + tier.label + '</span></div>';
+          await renderHadiahUntukRdm(memberId);
+        }
+      } catch (err) {
+        toast(err.message || 'Gagal memproses redeem');
+      }
+    });
+  } catch (err) {
+    toast(err.message || 'Terjadi kesalahan');
+  }
 }
 
 // ============================================================
