@@ -25,9 +25,6 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 });
 
-// Enable autocommit
-pool.query('SET autocommit = ON');
-
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
