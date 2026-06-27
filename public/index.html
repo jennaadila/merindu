@@ -623,6 +623,132 @@ loadDB();
 loadSession();
 
 // ============================================================
+// API INTEGRATION FUNCTIONS (OVERRIDE LOCAL STORAGE)
+// ============================================================
+
+async function daftar() {
+  const nama = document.getElementById('r-nama').value.trim();
+  const hp = document.getElementById('r-hp').value.trim();
+  const pin = document.getElementById('r-pin').value.trim();
+
+  if (!nama || !hp || !pin || pin.length !== 4) {
+    toast('Isi semua field dengan benar');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nama, hp, pin })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    toast('Registrasi berhasil!');
+    document.getElementById('r-nama').value = '';
+    document.getElementById('r-hp').value = '';
+    document.getElementById('r-pin').value = '';
+    document.getElementById('lm-hp').value = hp;
+    showPage('login-member');
+  } catch (err) {
+    toast(err.message || 'Gagal registrasi');
+  }
+}
+
+async function loginMember() {
+  const hp = document.getElementById('lm-hp').value.trim();
+  const pin = document.getElementById('lm-pin').value.trim();
+
+  if (!hp || !pin) {
+    toast('Masukkan nomor HP dan PIN');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/member/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hp, pin })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    toast('Login berhasil!');
+    document.getElementById('lm-hp').value = '';
+    document.getElementById('lm-pin').value = '';
+    mTab('riwayat');
+    showPage('dashboard');
+    loadMemberProfile();
+  } catch (err) {
+    toast(err.message || 'Login gagal');
+  }
+}
+
+async function loadMemberProfile() {
+  try {
+    const res = await fetch('/api/member/profile');
+    
+    if (!res.ok) {
+      showPage('landing');
+      return;
+    }
+
+    const member = await res.json();
+
+    document.getElementById('m-nama').textContent = member.nama;
+    document.getElementById('m-poin').textContent = member.poin;
+    document.getElementById('m-id').textContent = 'ID: ' + member.id;
+
+    const tier = getTier(member.poin);
+    document.getElementById('m-tier').className = 'tier-badge ' + tier.cls;
+    document.getElementById('m-tier').textContent = tier.label;
+
+    const nextTier = tier.next;
+    const nextPoints = nextTier === 'Silver' ? 100 : 300;
+    document.getElementById('m-tier-nxt').textContent = nextTier + ' (' + nextPoints + ' poin)';
+    const progress = Math.min(100, (member.poin / nextPoints) * 100);
+    document.getElementById('m-prog').style.width = progress + '%';
+    document.getElementById('m-prog-msg').textContent = member.poin + ' / ' + nextPoints + ' poin';
+
+    loadMemberTransactions();
+  } catch (err) {
+    console.error('Error loading profile:', err);
+    showPage('landing');
+  }
+}
+
+async function loadMemberTransactions() {
+  try {
+    const res = await fetch('/api/member/transactions');
+    const transactions = await res.json();
+
+    const el = document.getElementById('m-tx-list');
+    if (!transactions.length) {
+      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Belum ada transaksi</div>';
+      return;
+    }
+
+    el.innerHTML = transactions.map(tx => {
+      const isRedeem = tx.tipe === 'redeem';
+      const icon = isRedeem ? '−' : '+';
+      const color = isRedeem ? 'minus' : '';
+      return `<div class="tx">
+        <div class="tx-info">
+          <div class="tx-nama">${isRedeem ? tx.ket : 'Belanja'}</div>
+          <div class="tx-date">${formatDate(tx.tgl)}${tx.waktu ? ' ' + tx.waktu : ''}</div>
+        </div>
+        <div class="tx-poin ${color}">${icon}${Math.abs(tx.poin)}</div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('Error loading transactions:', err);
+  }
+}
+
+// ============================================================
 // UTILS
 // ============================================================
 function showPage(name) {
@@ -718,8 +844,8 @@ function toast(msg) {
 }
 
 function getTier(p) {
-  if (p >= DB.settings.goldThreshold)   return { label: '🥇 Gold',   cls: 't-gold' };
-  if (p >= DB.settings.silverThreshold) return { label: '🥈 Silver', cls: 't-silver' };
+  if (p >= 300)   return { label: '🥇 Gold',   cls: 't-gold', next: 'Platinum' };
+  if (p >= 100) return { label: '🥈 Silver', cls: 't-silver', next: 'Gold' };
   return { label: '🥉 Bronze', cls: 't-bronze' };
 }
 
