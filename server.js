@@ -72,7 +72,7 @@ async function initDB() {
       CREATE TABLE IF NOT EXISTS hadiah (
         id SERIAL PRIMARY KEY,
         nama TEXT NOT NULL,
-        desc TEXT,
+        "desc" TEXT,
         poin INTEGER NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -97,9 +97,9 @@ async function initDB() {
     // Initialize default hadiah
     const hadiahCount = await pool.query('SELECT COUNT(*) FROM hadiah');
     if (parseInt(hadiahCount.rows[0].count) === 0) {
-      await pool.query('INSERT INTO hadiah (nama, desc, poin) VALUES ($1, $2, $3)', ['Donat Gratis', 'Tukar dengan 1 donat gratis pilihan', 20]);
-      await pool.query('INSERT INTO hadiah (nama, desc, poin) VALUES ($1, $2, $3)', ['Setengah Lusin Donat', '6 donat dengan diskon khusus', 50]);
-      await pool.query('INSERT INTO hadiah (nama, desc, poin) VALUES ($1, $2, $3)', ['Lusin Donat', '12 donat dengan harga spesial', 100]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Donat Gratis', 'Tukar dengan 1 donat gratis pilihan', 20]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Setengah Lusin Donat', '6 donat dengan diskon khusus', 50]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Lusin Donat', '12 donat dengan harga spesial', 100]);
     }
 
     // Initialize default karyawan
@@ -497,7 +497,7 @@ app.post('/api/admin/hadiah', async (req, res) => {
   }
 
   try {
-    await pool.query('INSERT INTO hadiah (nama, desc, poin) VALUES ($1, $2, $3)', [nama, desc || '', poin]);
+    await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', [nama, desc || '', poin]);
     res.json({ success: true, message: 'Hadiah ditambahkan' });
   } catch (err) {
     res.status(500).json({ error: 'Terjadi kesalahan' });
@@ -516,7 +516,7 @@ app.put('/api/admin/hadiah/:id', async (req, res) => {
   }
 
   try {
-    await pool.query('UPDATE hadiah SET nama = $1, desc = $2, poin = $3 WHERE id = $4', [nama, desc || '', poin, req.params.id]);
+    await pool.query('UPDATE hadiah SET nama = $1, "desc" = $2, poin = $3 WHERE id = $4', [nama, desc || '', poin, req.params.id]);
     res.json({ success: true, message: 'Hadiah diperbarui' });
   } catch (err) {
     res.status(500).json({ error: 'Terjadi kesalahan' });
