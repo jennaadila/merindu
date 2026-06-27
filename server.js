@@ -25,6 +25,9 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 });
 
+// Enable autocommit
+pool.query('SET autocommit = ON');
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -134,12 +137,15 @@ app.get('/health', (req, res) => {
 
 app.get('/api/debug/members', async (req, res) => {
   try {
+    console.error('[DEBUG] Querying members...');
     const result = await pool.query('SELECT id, nama FROM members LIMIT 10');
+    console.error('[DEBUG] Query returned:', result.rows.length, 'rows');
     res.json({ 
       count: result.rows.length, 
       members: result.rows 
     });
   } catch (err) {
+    console.error('[DEBUG] Query error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -152,7 +158,9 @@ app.post('/api/register', async (req, res) => {
   }
 
   try {
+    console.error(`[REGISTER] Inserting: hp=${hp}, nama=${nama}, pin=${pin}`);
     const result = await pool.query('INSERT INTO members (id, nama, pin) VALUES ($1, $2, $3)', [hp, nama, pin]);
+    console.error(`[REGISTER] Insert complete, rows affected:`, result.rowCount);
     
     req.session.userId = hp;
     req.session.userType = 'member';
@@ -164,7 +172,7 @@ app.post('/api/register', async (req, res) => {
       user: { id: hp, nama: nama }
     });
   } catch (err) {
-    console.error('Register error:', err.message, err.code);
+    console.error('[REGISTER] Error:', err.message, err.code);
     if (err.code === '23505') {
       return res.status(400).json({ error: 'Nomor HP sudah terdaftar' });
     }
