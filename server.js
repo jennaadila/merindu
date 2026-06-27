@@ -28,6 +28,13 @@ pool.query('SELECT NOW()', (err, res) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+
+// Log all requests
+app.use((req, res, next) => {
+  console.error(`[REQUEST] ${req.method} ${req.path}`);
+  next();
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'merindu-membership-secret-key',
   resave: false,
