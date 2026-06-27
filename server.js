@@ -123,6 +123,18 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/api/debug/members', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, nama FROM members LIMIT 10');
+    res.json({ 
+      count: result.rows.length, 
+      members: result.rows 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/register', async (req, res) => {
   const { nama, hp, pin } = req.body;
   
