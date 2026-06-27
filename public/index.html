@@ -1625,61 +1625,97 @@ function renderMemberList() {
   }).join('');
 }
 
-function renderAudit() {
-  var customDari   = document.getElementById('a-tgl-dari')   ? document.getElementById('a-tgl-dari').value   : '';
-  var customSampai = document.getElementById('a-tgl-sampai') ? document.getElementById('a-tgl-sampai').value : '';
-  var range        = getDateRange(aRange, customDari, customSampai);
-  var memberFilter = document.getElementById('a-member-select') ? document.getElementById('a-member-select').value : '';
-  var el           = document.getElementById('a-audit-list');
-  var sumEl        = document.getElementById('a-audit-summary');
+async function renderAudit() {
+  const customDari = document.getElementById('a-tgl-dari')?.value || '';
+  const customSampai = document.getElementById('a-tgl-sampai')?.value || '';
+  const range = getDateRange(aRange, customDari, customSampai);
+  const memberFilter = document.getElementById('a-member-select')?.value || '';
+  const el = document.getElementById('a-audit-list');
+  const sumEl = document.getElementById('a-audit-summary');
 
-  // Populate dropdown
-  buildMemberSelect('a-member-select', renderAudit);
-
-  var rows = [];
-  Object.entries(DB.members).forEach(function(e) {
-    var id = e[0]; var m = e[1];
-    if (memberFilter && id !== memberFilter) return;
-    m.tx.forEach(function(tx) {
-      if (inRange(tx.tgl, range.dari, range.sampai)) {
-        rows.push(Object.assign({}, tx, { memberId: id, memberNama: m.nama }));
-      }
+  try {
+    // Load members for dropdown
+    const membersRes = await fetch('/api/admin/members', {
+      credentials: 'include'
     });
-  });
+    if (membersRes.ok) {
+      const members = await membersRes.json();
+      const select = document.getElementById('a-member-select');
+      if (select) {
+        const current = select.value;
+        select.innerHTML = '<option value="">— Semua Member —</option>';
+        members.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.nama;
+          select.appendChild(opt);
+        });
+        select.value = current;
+      }
+    }
 
-  if (aHisFilter !== 'all') rows = rows.filter(function(r) { return r.tipe === aHisFilter; });
-  rows.sort(function(a, b) { return (b.tgl + (b.waktu||'')).localeCompare(a.tgl + (a.waktu||'')); });
+    // Fetch all transactions
+    const txRes = await fetch('/api/admin/transactions', {
+      credentials: 'include'
+    });
+    if (!txRes.ok) throw new Error('Gagal memuat transaksi');
 
-  if (rows.length) {
-    var jmlTambah = rows.filter(function(r){ return r.tipe==='tambah'; }).length;
-    var jmlRedeem = rows.filter(function(r){ return r.tipe==='redeem'; }).length;
-    var ttlMasuk  = rows.filter(function(r){ return r.tipe==='tambah'; }).reduce(function(s,r){ return s+r.poin; },0);
-    var ttlKeluar = rows.filter(function(r){ return r.tipe==='redeem'; }).reduce(function(s,r){ return s+Math.abs(r.poin); },0);
-    sumEl.style.display = 'block';
-    sumEl.innerHTML =
-      '<div class="preview-row"><span>Tambah poin</span><span class="val">' + jmlTambah + ' tx (+' + ttlMasuk + ' poin)</span></div>' +
-      '<div class="preview-row"><span>Redeem</span><span class="val">' + jmlRedeem + ' tx (−' + ttlKeluar + ' poin)</span></div>';
-  } else { sumEl.style.display = 'none'; }
+    let rows = await txRes.json();
 
-  if (!rows.length) {
-    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
-    return;
+    // Filter by member if specified
+    if (memberFilter) {
+      rows = rows.filter(r => r.memberId === memberFilter);
+    }
+
+    // Filter by date range
+    rows = rows.filter(r => inRange(r.tgl, range.dari, range.sampai));
+
+    // Filter by type
+    if (aHisFilter !== 'all') {
+      rows = rows.filter(r => r.tipe === aHisFilter);
+    }
+
+    // Sort by date descending
+    rows.sort((a, b) => (b.tgl + (b.waktu || '')).localeCompare(a.tgl + (a.waktu || '')));
+
+    // Display summary
+    if (rows.length) {
+      const jmlTambah = rows.filter(r => r.tipe === 'tambah').length;
+      const jmlRedeem = rows.filter(r => r.tipe === 'redeem').length;
+      const ttlMasuk = rows.filter(r => r.tipe === 'tambah').reduce((s, r) => s + r.poin, 0);
+      const ttlKeluar = rows.filter(r => r.tipe === 'redeem').reduce((s, r) => s + Math.abs(r.poin), 0);
+      sumEl.style.display = 'block';
+      sumEl.innerHTML =
+        '<div class="preview-row"><span>Tambah poin</span><span class="val">' + jmlTambah + ' tx (+' + ttlMasuk + ' poin)</span></div>' +
+        '<div class="preview-row"><span>Redeem</span><span class="val">' + jmlRedeem + ' tx (−' + ttlKeluar + ' poin)</span></div>';
+    } else {
+      sumEl.style.display = 'none';
+    }
+
+    // Display transactions
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
+      return;
+    }
+
+    el.innerHTML = rows.map(r => {
+      const isR = r.tipe === 'redeem';
+      const badge = isR
+        ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
+        : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
+      return '<div class="tx">' +
+        '<div class="tx-info">' +
+          '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
+          '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' · ' + r.waktu : '') + '</div>' +
+          '<div class="tx-nom">' + (isR ? (r.ket || 'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
+          '<div style="font-size:10px;color:var(--muted);">🏷️ ' + (r.kary || '—') + '</div>' +
+        '</div>' +
+        '<div class="tx-poin' + (isR ? ' minus' : '') + '">' + (isR ? '−' : '+') + Math.abs(r.poin) + '</div>' +
+      '</div>';
+    }).join('');
+  } catch (err) {
+    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--pink);font-size:13px;">' + err.message + '</div>';
   }
-  el.innerHTML = rows.map(function(r) {
-    var isR   = r.tipe === 'redeem';
-    var badge = isR
-      ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
-      : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
-    return '<div class="tx">' +
-      '<div class="tx-info">' +
-        '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
-        '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' · ' + r.waktu : '') + '</div>' +
-        '<div class="tx-nom">' + (isR ? (r.ket||'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
-        '<div style="font-size:10px;color:var(--muted);">🏷️ ' + (r.kary||'—') + '</div>' +
-      '</div>' +
-      '<div class="tx-poin' + (isR?' minus':'') + '">' + (isR?'−':'+') + Math.abs(r.poin) + '</div>' +
-    '</div>';
-  }).join('');
 }
 
 function renderSetting() {
