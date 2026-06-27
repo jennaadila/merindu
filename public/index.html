@@ -857,35 +857,6 @@ function nowTime() { return new Date().toLocaleTimeString('id-ID', { hour: '2-di
 // ============================================================
 // DAFTAR
 // ============================================================
-function daftar() {
-  var nama = document.getElementById('r-nama').value.trim();
-  var hp   = document.getElementById('r-hp').value.trim();
-  var pin  = document.getElementById('r-pin').value.trim();
-  if (!nama || !hp || !pin)  { toast('Lengkapi semua data'); return; }
-  if (pin.length !== 4)      { toast('PIN harus 4 digit'); return; }
-  if (DB.members[hp])        { toast('Nomor sudah terdaftar'); return; }
-  DB.members[hp] = { nama: nama, pin: pin, poin: 0, tx: [] };
-  saveDB();
-  toast('Berhasil daftar!');
-  document.getElementById('lm-hp').value = hp;
-  showPage('login-member');
-}
-
-// ============================================================
-// MEMBER LOGIN / LOGOUT
-// ============================================================
-function loginMember() {
-  var hp  = document.getElementById('lm-hp').value.trim();
-  var pin = document.getElementById('lm-pin').value.trim();
-  var m   = DB.members[hp];
-  if (!m || m.pin !== pin) { toast('Nomor HP atau PIN salah'); return; }
-  curMember = hp;
-  saveSession();
-  renderDashboard();
-  mTab('riwayat');
-  showPage('dashboard');
-}
-// ============================================================
 // LOGOUT CONFIRMATION
 // ============================================================
 function confirmLogout(type) {
