@@ -143,7 +143,7 @@ app.post('/api/register', async (req, res) => {
   }
 
   try {
-    await pool.query('INSERT INTO members (id, nama, pin) VALUES ($1, $2, $3)', [hp, nama, pin]);
+    const result = await pool.query('INSERT INTO members (id, nama, pin) VALUES ($1, $2, $3)', [hp, nama, pin]);
     
     req.session.userId = hp;
     req.session.userType = 'member';
@@ -155,10 +155,11 @@ app.post('/api/register', async (req, res) => {
       user: { id: hp, nama: nama }
     });
   } catch (err) {
+    console.error('Register error:', err.message, err.code);
     if (err.code === '23505') {
       return res.status(400).json({ error: 'Nomor HP sudah terdaftar' });
     }
-    res.status(500).json({ error: 'Terjadi kesalahan' });
+    res.status(500).json({ error: 'Database error: ' + err.message });
   }
 });
 
