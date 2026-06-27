@@ -749,6 +749,95 @@ async function loadMemberTransactions() {
 }
 
 // ============================================================
+// KARYAWAN FUNCTIONS (API-BASED)
+// ============================================================
+
+async function cariMemberTx() {
+  const id = document.getElementById('tx-id').value.trim();
+  const infoEl = document.getElementById('tx-member-info');
+  const nfEl = document.getElementById('tx-not-found');
+
+  if (!id) {
+    toast('Masukkan nomor HP');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/karyawan/search-member/${id}`);
+    
+    if (!res.ok) {
+      infoEl.style.display = 'none';
+      nfEl.style.display = 'block';
+      return;
+    }
+
+    const member = await res.json();
+    const tier = getTier(member.poin);
+
+    infoEl.innerHTML = `
+      <div class="preview-row"><span>Nama</span><span class="val">${member.nama}</span></div>
+      <div class="preview-row"><span>Poin saat ini</span><span class="val">${member.poin} poin</span></div>
+      <div class="preview-row"><span>Tier</span><span class="val">${tier.label}</span></div>
+    `;
+    infoEl.style.display = 'block';
+    nfEl.style.display = 'none';
+    document.getElementById('tx-nominal').value = '';
+  } catch (err) {
+    infoEl.style.display = 'none';
+    nfEl.style.display = 'block';
+  }
+}
+
+async function hitungLaluSimpan() {
+  const memberId = document.getElementById('tx-id').value.trim();
+  const tgl = document.getElementById('tx-tgl').value;
+  const nominal = parseInt(document.getElementById('tx-nominal').value) || 0;
+
+  if (!memberId || !tgl || nominal <= 0) {
+    toast('Isi semua field dengan benar');
+    return;
+  }
+
+  const poin = Math.floor(nominal / 25000);
+  const preview = document.getElementById('tx-poin-preview');
+
+  preview.innerHTML = `
+    <div class="preview-row"><span>Nominal</span><span class="val">${formatRp(nominal)}</span></div>
+    <div class="preview-row"><span>Poin didapat</span><span class="val">+${poin} poin</span></div>
+  `;
+  preview.style.display = 'block';
+
+  const bodyHTML = `
+    <div class="preview">
+      <div class="preview-row"><span>Member</span><span class="val">${document.getElementById('tx-id').value}</span></div>
+      <div class="preview-row"><span>Nominal</span><span class="val">${formatRp(nominal)}</span></div>
+      <div class="preview-row"><span>Poin didapat</span><span class="val">+${poin} poin</span></div>
+    </div>
+  `;
+
+  showModal('Simpan Transaksi?', bodyHTML, async () => {
+    try {
+      const res = await fetch('/api/karyawan/transaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId, tgl, nominal, poin })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      toast(`+${poin} poin untuk member`);
+      document.getElementById('tx-id').value = '';
+      document.getElementById('tx-nominal').value = '';
+      document.getElementById('tx-member-info').style.display = 'none';
+      preview.style.display = 'none';
+    } catch (err) {
+      toast(err.message || 'Gagal menyimpan transaksi');
+    }
+  });
+}
+
+// ============================================================
 // UTILS
 // ============================================================
 function showPage(name) {
@@ -850,7 +939,9 @@ function getTier(p) {
 }
 
 function fmtRp(n)  { return 'Rp' + Number(n).toLocaleString('id'); }
+function formatRp(n) { return 'Rp' + Number(n).toLocaleString('id'); }
 function fmtTgl(s) { return new Date(s).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function formatDate(s) { return new Date(s).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); }
 function todayStr(){ return new Date().toISOString().split('T')[0]; }
 function nowTime() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
 
@@ -1091,68 +1182,16 @@ function resetFormTx() {
   document.getElementById('tx-poin-preview').style.display = 'none';
 }
 
-function cariMemberTx() {
-  var id = document.getElementById('tx-id').value.trim();
-  var m  = DB.members[id];
-  var infoEl   = document.getElementById('tx-member-info');
-  var nfEl     = document.getElementById('tx-not-found');
-  var previewEl = document.getElementById('tx-poin-preview');
-
-  if (!id) { toast('Masukkan nomor HP dulu'); return; }
-
-  if (m) {
-    infoEl.innerHTML =
-      '<div class="preview-row"><span>Nama</span><span class="val">' + m.nama + '</span></div>' +
-      '<div class="preview-row"><span>Poin saat ini</span><span class="val">' + m.poin + ' poin</span></div>' +
-      '<div class="preview-row"><span>Tier</span><span class="val">' + getTier(m.poin).label + '</span></div>';
-    infoEl.style.display = 'block';
-    nfEl.style.display   = 'none';
-    previewEl.style.display = 'none';
-    document.getElementById('tx-nominal').value = '';
-  } else {
-    infoEl.style.display   = 'none';
-    nfEl.style.display     = 'block';
-    previewEl.style.display = 'none';
-  }
-}
-
-function hitungLaluSimpan() {
-  var id      = document.getElementById('tx-id').value.trim();
-  var tgl     = document.getElementById('tx-tgl').value;
-  var nominal = parseInt(document.getElementById('tx-nominal').value) || 0;
-  var m       = DB.members[id];
-
-  if (!m)      { toast('Cari member dulu'); return; }
-  if (!tgl)    { toast('Isi tanggal transaksi'); return; }
-  if (nominal <= 0) { toast('Isi nominal belanja'); return; }
-  if (nominal < DB.settings.nominalPerPoin) {
-    toast('Min. belanja ' + fmtRp(DB.settings.nominalPerPoin));
-    return;
-  }
-
-  var poin    = Math.floor(nominal / DB.settings.nominalPerPoin);
-  var preview = document.getElementById('tx-poin-preview');
-  preview.innerHTML =
-    '<div class="preview-row"><span>Nominal</span><span class="val">' + fmtRp(nominal) + '</span></div>' +
-    '<div class="preview-row"><span>Poin didapat</span><span class="val">+' + poin + ' poin</span></div>' +
-    '<div class="preview-row"><span>Total poin setelah</span><span class="val">' + (m.poin + poin) + ' poin</span></div>';
-  preview.style.display = 'block';
-
-  var bodyHTML =
-    '<div class="preview">' +
-    '<div class="preview-row"><span>Member</span><span class="val">' + m.nama + '</span></div>' +
-    '<div class="preview-row"><span>Nominal</span><span class="val">' + fmtRp(nominal) + '</span></div>' +
-    '<div class="preview-row"><span>Poin didapat</span><span class="val">+' + poin + ' poin</span></div>' +
-    '<div class="preview-row"><span>Total poin</span><span class="val">' + (m.poin + poin) + ' poin</span></div>' +
-    '</div>';
-
-  showModal('Simpan Transaksi?', bodyHTML, function() {
-    m.poin += poin;
-    m.tx.push({ tgl: tgl, waktu: nowTime(), nominal: nominal, poin: poin, tipe: 'tambah', kary: DB.karyawan[curKaryawan].nama });
-    toast('+' + poin + ' poin untuk ' + m.nama);
-    resetFormTx();
-    document.getElementById('tx-tgl').value = todayStr();
-  });
+// ============================================================
+// INPUT TRANSAKSI
+// ============================================================
+function resetFormTx() {
+  document.getElementById('tx-id').value      = '';
+  document.getElementById('tx-tgl').value     = todayStr();
+  document.getElementById('tx-nominal').value = '';
+  document.getElementById('tx-member-info').style.display = 'none';
+  document.getElementById('tx-not-found').style.display   = 'none';
+  document.getElementById('tx-poin-preview').style.display = 'none';
 }
 
 // ============================================================
