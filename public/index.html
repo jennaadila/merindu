@@ -640,6 +640,7 @@ async function daftar() {
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ nama, hp, pin })
     });
 
@@ -670,6 +671,7 @@ async function loginMember() {
     const res = await fetch('/api/member/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ hp, pin })
     });
 
@@ -689,7 +691,9 @@ async function loginMember() {
 
 async function loadMemberProfile() {
   try {
-    const res = await fetch('/api/member/profile');
+    const res = await fetch('/api/member/profile', {
+      credentials: 'include'
+    });
     
     if (!res.ok) {
       showPage('landing');
@@ -722,7 +726,9 @@ async function loadMemberProfile() {
 
 async function loadMemberTransactions() {
   try {
-    const res = await fetch('/api/member/transactions');
+    const res = await fetch('/api/member/transactions', {
+      credentials: 'include'
+    });
     const transactions = await res.json();
 
     const el = document.getElementById('m-tx-list');
@@ -763,7 +769,9 @@ async function cariMemberTx() {
   }
 
   try {
-    const res = await fetch(`/api/karyawan/search-member/${id}`);
+    const res = await fetch(`/api/karyawan/search-member/${id}`, {
+      credentials: 'include'
+    });
     
     if (!res.ok) {
       infoEl.style.display = 'none';
@@ -820,6 +828,7 @@ async function hitungLaluSimpan() {
       const res = await fetch('/api/karyawan/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ memberId, tgl, nominal, poin })
       });
 
