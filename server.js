@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const { Pool } = require('pg');
-const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,15 +32,11 @@ async function waitForDB(maxAttempts = 30) {
   return false;
 }
 
-// Session store with PostgreSQL
+// Session store in memory
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use(session({
-  store: new pgSession({
-    pool: pool,
-    tableName: 'session'
-  }),
   secret: process.env.SESSION_SECRET || 'merindu-membership-secret-key',
   resave: false,
   saveUninitialized: false,
