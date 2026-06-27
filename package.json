@@ -7,16 +7,14 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "keywords": ["membership", "loyalty", "points"],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-  "express": "^4.18.2",
-  "cors": "^2.8.5",
-  "better-sqlite3": "^9.0.0",
-  "express-session": "^1.17.3"
-},
+    "pg": "^8.11.3",
+    "connect-pg-simple": "^9.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.10"
   }
 }
