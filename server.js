@@ -127,7 +127,9 @@ app.post('/api/register', async (req, res) => {
   }
 
   try {
+    console.log(`[REGISTER] Attempting to register: hp=${hp}, nama=${nama}`);
     await pool.query('INSERT INTO members (id, nama, pin) VALUES ($1, $2, $3)', [hp, nama, pin]);
+    console.log(`[REGISTER] Success: hp=${hp} registered`);
     
     req.session.userId = hp;
     req.session.userType = 'member';
@@ -139,6 +141,7 @@ app.post('/api/register', async (req, res) => {
       user: { id: hp, nama: nama }
     });
   } catch (err) {
+    console.log(`[REGISTER] Error: ${err.message}`);
     if (err.code === '23505') {
       return res.status(400).json({ error: 'Nomor HP sudah terdaftar' });
     }
@@ -154,10 +157,14 @@ app.post('/api/member/login', async (req, res) => {
   }
 
   try {
+    console.log(`[LOGIN] Attempting login: hp=${hp}`);
     const result = await pool.query('SELECT * FROM members WHERE id = $1 AND pin = $2', [hp, pin]);
+    console.log(`[LOGIN] Query result for hp=${hp}: found=${result.rows.length > 0}`);
+    
     const member = result.rows[0];
     
     if (!member) {
+      console.log(`[LOGIN] Failed: member not found or pin incorrect`);
       return res.status(401).json({ error: 'Nomor HP atau PIN salah' });
     }
 
@@ -165,12 +172,14 @@ app.post('/api/member/login', async (req, res) => {
     req.session.userType = 'member';
     req.session.userName = member.nama;
     
+    console.log(`[LOGIN] Success: hp=${hp} logged in`);
     res.json({ 
       success: true, 
       message: 'Login berhasil',
       user: { id: hp, nama: member.nama, poin: member.poin }
     });
   } catch (err) {
+    console.log(`[LOGIN] Error: ${err.message}`);
     res.status(500).json({ error: 'Terjadi kesalahan' });
   }
 });
