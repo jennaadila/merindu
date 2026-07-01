@@ -504,6 +504,34 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
       <div class="field"><label>Gold threshold (poin)</label><input id="set-gd" type="number" value="300"></div>
       <button class="btn btn-primary" onclick="simpanSetting()">Simpan Setting</button>
     </div>
+  </div>
+
+  <div class="hr"></div>
+  <button class="btn btn-secondary" onclick="logoutAdmin()">Keluar dari Admin</button>
+</div>
+
+<script src="api-integration.js"></script>
+</body>
+</html>
+      <div style="display:flex;gap:6px;">
+        <button class="tab on" id="atab-all" style="flex:1;" onclick="aHisTab('all')">Semua</button>
+        <button class="tab" id="atab-tambah" style="flex:1;" onclick="aHisTab('tambah')">+Poin</button>
+        <button class="tab" id="atab-redeem" style="flex:1;" onclick="aHisTab('redeem')">Redeem</button>
+      </div>
+    </div>
+    <div id="a-his-summary" style="display:none" class="preview"></div>
+    <div class="card" id="a-his-list"></div>
+  </div>
+
+  <!-- Setting -->
+  <div id="apanel-s" style="display:none">
+    <div class="card">
+      <div class="clabel">Program Poin</div>
+      <div class="field"><label>Nominal per 1 poin (Rp)</label><input id="set-n" type="number" value="25000"></div>
+      <div class="field"><label>Silver threshold (poin)</label><input id="set-sv" type="number" value="100"></div>
+      <div class="field"><label>Gold threshold (poin)</label><input id="set-gd" type="number" value="300"></div>
+      <button class="btn btn-primary" onclick="simpanSetting()">Simpan Setting</button>
+    </div>
     <div class="card">
       <div class="clabel">Program Hadiah</div>
       <div id="hadiah-admin-list"></div>
@@ -523,13 +551,9 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
   </div>
 </div>
 
-<script>
-// ============================================================
-// DATA
-// ============================================================
-var DB = {
-  settings: { nominalPerPoin: 25000, silverThreshold: 100, goldThreshold: 300, adminPin: '0000' },
-  hadiah: [
+<script src="api-integration.js"></script>
+</body>
+</html>
     { id: 1, nama: 'Donat Gratis 1 pcs',    desc: 'Varian apa saja, 1 buah',      poin: 10 },
     { id: 2, nama: 'Diskon Rp15.000',        desc: 'Min. pembelian Rp50.000',       poin: 20 },
     { id: 3, nama: 'Box Donat 6 pcs Gratis', desc: '1 box pilihan, varian bebas',   poin: 50 }
