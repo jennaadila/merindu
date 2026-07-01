@@ -444,10 +444,10 @@ async function pinTap(k) {
     }
     return;
   }
-  if ((window.pinBuf || '').length >= 4) return;
+  if ((window.pinBuf || '').length >= 6) return;
   window.pinBuf = (window.pinBuf || '') + k;
   updatePinDots();
-  if ((window.pinBuf || '').length === 4) {
+  if ((window.pinBuf || '').length === 6) {
     setTimeout(() => pinTap('ok'), 200);
   }
 }
@@ -513,7 +513,7 @@ function getTodayString() {
 }
 
 function updatePinDots() {
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 6; i++) {
     const d = document.getElementById('pd' + i);
     if (i < (window.pinBuf || '').length) d.classList.add('on');
     else d.classList.remove('on');
@@ -679,8 +679,9 @@ function kTab(tab) {
 
   if (tab === 'his') {
     setKRange('today');
-    loadMembersForKaryawaFilter();
-    renderRiwayatKaryawan();
+    loadMembersForKaryawaFilter().then(() => {
+      renderRiwayatKaryawan();
+    });
   }
 }
 
@@ -805,10 +806,19 @@ async function renderRiwayatKaryawan() {
       const isRedeem = t.tipe === 'redeem';
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
+      let dateStr = '—';
+      if (t.tgl) {
+        try {
+          dateStr = formatDate(t.tgl);
+        } catch (e) {
+          dateStr = '—';
+        }
+      }
+      const timeStr = t.waktu ? ' ' + t.waktu : '';
       return `<div class="tx">
         <div class="tx-info">
           <div class="tx-nama">${isRedeem ? (t.ket || 'Redeem') : 'Belanja'}</div>
-          <div class="tx-date">${formatDate(t.tgl)}${t.waktu ? ' ' + t.waktu : ''}</div>
+          <div class="tx-date">${dateStr}${timeStr}</div>
           <div class="tx-nom">${t.nominal ? formatRp(t.nominal) : t.memberNama}</div>
         </div>
         <div class="tx-poin ${color}">${icon}${Math.abs(t.poin)}</div>
@@ -837,8 +847,9 @@ function aTab(tab) {
     renderMemberList();
   } else if (tab === 'a') {
     setARange('today');
-    loadMembersForAdminFilter();
-    renderAudit();
+    loadMembersForAdminFilter().then(() => {
+      renderAudit();
+    });
   }
 }
 
@@ -963,10 +974,19 @@ async function renderAudit() {
       const isRedeem = t.tipe === 'redeem';
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
+      let dateStr = '—';
+      if (t.tgl) {
+        try {
+          dateStr = formatDate(t.tgl);
+        } catch (e) {
+          dateStr = '—';
+        }
+      }
+      const timeStr = t.waktu ? ' ' + t.waktu : '';
       return `<div class="tx">
         <div class="tx-info">
           <div class="tx-nama">${t.memberNama || 'N/A'} ${isRedeem ? '→' : '← '} ${isRedeem ? (t.ket || 'Redeem') : 'Belanja'}</div>
-          <div class="tx-date">${formatDate(t.tgl)}${t.waktu ? ' ' + t.waktu : ''}</div>
+          <div class="tx-date">${dateStr}${timeStr}</div>
           <div class="tx-nom">${t.nominal ? formatRp(t.nominal) : ''} ${t.kary ? '(' + t.kary + ')' : ''}</div>
         </div>
         <div class="tx-poin ${color}">${icon}${Math.abs(t.poin)}</div>
