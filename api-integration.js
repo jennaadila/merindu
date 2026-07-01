@@ -136,13 +136,11 @@ async function loadHadiah() {
 
     const el = document.getElementById('m-hadiah-list');
     const colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-    const icons = ['🍩', '💸', '🎁', '⭐', '🎀'];
 
     el.innerHTML = hadiah.map((h, i) => {
       const color = colors[i % colors.length];
-      const icon = icons[i % icons.length];
       return `<div class="hadiah-card ${color}">
-        <div class="hadiah-judul">${icon} ${h.nama}</div>
+        <div class="hadiah-judul">${h.nama}</div>
         <div class="hadiah-desc">${h.desc || ''}</div>
         <div class="hadiah-footer">
           <div class="hadiah-poin">${h.poin} poin</div>
@@ -336,17 +334,15 @@ async function renderHadiahUntukRdm(memberId, memberPoin) {
 
     const hadEl = document.getElementById('rdm-hadiah-list');
     const colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-    const icons = ['🍩', '💸', '🎁', '⭐', '🎀'];
 
     let html = '';
     hadiah.forEach((h, i) => {
       const cukup = memberPoin >= h.poin;
       const color = colors[i % colors.length];
-      const icon = icons[i % icons.length];
       const className = cukup ? 'hadiah-card ' + color + ' clickable' : 'hadiah-card ' + color + ' disabled';
 
       html += `<div class="${className}" onclick="${cukup ? `prosesRedeem(${h.id}, '${memberId}')` : ''}">
-        <div class="hadiah-judul">${icon} ${h.nama}</div>
+        <div class="hadiah-judul">${h.nama}</div>
         <div class="hadiah-desc">${h.desc || ''}</div>
         <div class="hadiah-footer">
           <div class="hadiah-poin">${h.poin} poin</div>
@@ -711,7 +707,7 @@ function setKRange(range) {
 
 async function loadMembersForKaryawaFilter() {
   try {
-    const res = await fetch('/api/karyawan/members');
+    const res = await fetch('/api/karyawan/members?t=' + Date.now());
     const members = await res.json();
     const select = document.getElementById('k-member-select');
     
@@ -760,7 +756,7 @@ function getKDateRange() {
 
 async function renderRiwayatKaryawan() {
   try {
-    const res = await fetch('/api/karyawan/transactions');
+    const res = await fetch('/api/karyawan/transactions?t=' + Date.now());
     const transactions = await res.json();
 
     const range = getKDateRange();
@@ -868,7 +864,7 @@ function setARange(range) {
 
 async function loadMembersForAdminFilter() {
   try {
-    const res = await fetch('/api/admin/members');
+    const res = await fetch('/api/admin/members?t=' + Date.now());
     const members = await res.json();
     const select = document.getElementById('a-member-select');
     
@@ -917,7 +913,7 @@ function getADateRange() {
 
 async function renderAudit() {
   try {
-    const res = await fetch('/api/admin/transactions');
+    const res = await fetch('/api/admin/transactions?t=' + Date.now());
     const transactions = await res.json();
 
     const range = getADateRange();
@@ -986,7 +982,8 @@ async function renderMemberList() {
   const search = (document.getElementById('a-cari').value || '').toLowerCase();
 
   try {
-    const res = await fetch('/api/admin/members');
+    // Force fresh data - add timestamp to bypass any caching
+    const res = await fetch('/api/admin/members?t=' + Date.now());
     const members = await res.json();
 
     let filtered = members;
@@ -1025,8 +1022,8 @@ async function renderMemberList() {
 
 async function loadAdminDashboardExtras() {
   try {
-    // Load tier distribution
-    const membersRes = await fetch('/api/admin/members');
+    // Force fresh data with timestamp
+    const membersRes = await fetch('/api/admin/members?t=' + Date.now());
     const members = await membersRes.json();
     const bronze = members.filter(m => m.poin < 100).length;
     const silver = members.filter(m => m.poin >= 100 && m.poin < 300).length;
@@ -1037,7 +1034,7 @@ async function loadAdminDashboardExtras() {
     document.getElementById('r-gd').textContent = gold;
 
     // Load popular hadiah
-    const txRes = await fetch('/api/admin/transactions');
+    const txRes = await fetch('/api/admin/transactions?t=' + Date.now());
     const transactions = await txRes.json();
     const redeems = transactions.filter(t => t.tipe === 'redeem');
     const hadiahCount = {};
