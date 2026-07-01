@@ -116,10 +116,19 @@ async function loadMemberTransactions() {
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
-      if (tx.tgl) {
-        const date = new Date(tx.tgl + 'T00:00:00');
+      
+      // Handle both string and object date formats from PostgreSQL
+      let tglStr = tx.tgl;
+      if (tx.tgl instanceof Date) {
+        tglStr = tx.tgl.toISOString().split('T')[0];
+      } else if (typeof tx.tgl === 'string') {
+        tglStr = tx.tgl;
+      }
+      
+      if (tglStr) {
+        const date = new Date(tglStr + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
-          dateStr = formatDate(tx.tgl);
+          dateStr = formatDate(tglStr);
         }
       }
       const timeStr = tx.waktu ? ' ' + tx.waktu : '';
@@ -499,10 +508,24 @@ function getTier(poin) {
 }
 
 function formatDate(dateStr) {
-  const date = new Date(dateStr + 'T00:00:00');
-  const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  // Handle both string and Date object inputs
+  let dateObj;
+  if (dateStr instanceof Date) {
+    // If it's a Date object, convert to ISO string first
+    dateObj = new Date(dateStr.toISOString().split('T')[0] + 'T00:00:00Z');
+  } else if (typeof dateStr === 'string') {
+    // Parse as UTC to preserve the date as-is (treat as WIB/Jakarta time)
+    dateObj = new Date(dateStr + 'T00:00:00Z');
+  } else {
+    return '—';
+  }
+  
+  if (isNaN(dateObj.getTime())) {
+    return '—';
+  }
+  
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  return date.getDate() + ' ' + months[date.getMonth()];
+  return dateObj.getUTCDate() + ' ' + months[dateObj.getUTCMonth()];
 }
 
 function formatRp(value) {
@@ -774,7 +797,7 @@ async function renderRiwayatKaryawan() {
     const historyType = window.kHistoryType;
 
     let filtered = transactions.filter(t => {
-      const tDate = new Date(t.tgl + 'T00:00:00');
+      const tDate = new Date(t.tgl + 'T00:00:00Z');
       if (tDate < range.from || tDate > range.to) return false;
       if (memberId && t.memberId !== memberId) return false;
       if (historyType === 'tambah' && t.tipe !== 'tambah') return false;
@@ -815,10 +838,19 @@ async function renderRiwayatKaryawan() {
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
-      if (t.tgl) {
-        const date = new Date(t.tgl + 'T00:00:00');
+      
+      // Handle both string and object date formats from PostgreSQL
+      let tglStr = t.tgl;
+      if (t.tgl instanceof Date) {
+        tglStr = t.tgl.toISOString().split('T')[0];
+      } else if (typeof t.tgl === 'string') {
+        tglStr = t.tgl;
+      }
+      
+      if (tglStr) {
+        const date = new Date(tglStr + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
-          dateStr = formatDate(t.tgl);
+          dateStr = formatDate(tglStr);
         }
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
@@ -941,7 +973,7 @@ async function renderAudit() {
     const historyType = window.aHistoryType;
 
     let filtered = transactions.filter(t => {
-      const tDate = new Date(t.tgl + 'T00:00:00');
+      const tDate = new Date(t.tgl + 'T00:00:00Z');
       if (tDate < range.from || tDate > range.to) return false;
       if (memberId && t.memberId !== memberId) return false;
       if (historyType === 'tambah' && t.tipe !== 'tambah') return false;
@@ -982,10 +1014,19 @@ async function renderAudit() {
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
-      if (t.tgl) {
-        const date = new Date(t.tgl + 'T00:00:00');
+      
+      // Handle both string and object date formats from PostgreSQL
+      let tglStr = t.tgl;
+      if (t.tgl instanceof Date) {
+        tglStr = t.tgl.toISOString().split('T')[0];
+      } else if (typeof t.tgl === 'string') {
+        tglStr = t.tgl;
+      }
+      
+      if (tglStr) {
+        const date = new Date(tglStr + 'T00:00:00Z');
         if (!isNaN(date.getTime())) {
-          dateStr = formatDate(t.tgl);
+          dateStr = formatDate(tglStr);
         }
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
