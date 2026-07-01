@@ -680,6 +680,7 @@ function kTab(tab) {
   if (tab === 'his') {
     setKRange('today');
     loadMembersForKaryawaFilter();
+    renderRiwayatKaryawan();
   }
 }
 
@@ -837,6 +838,7 @@ function aTab(tab) {
   } else if (tab === 'a') {
     setARange('today');
     loadMembersForAdminFilter();
+    renderAudit();
   }
 }
 
