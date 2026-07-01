@@ -499,8 +499,10 @@ async function logoutAdmin() {
 // ===== HELPER FUNCTIONS =====
 
 function getTier(poin) {
-  if (poin >= 300) return { label: '🥇 Gold', cls: 't-gold', next: 'Platinum' };
-  if (poin >= 100) return { label: '🥈 Silver', cls: 't-silver', next: 'Gold' };
+  const goldThreshold = window.appSettings ? window.appSettings.goldThreshold : 300;
+  const silverThreshold = window.appSettings ? window.appSettings.silverThreshold : 100;
+  if (poin >= goldThreshold) return { label: '🥇 Gold', cls: 't-gold', next: 'Platinum' };
+  if (poin >= silverThreshold) return { label: '🥈 Silver', cls: 't-silver', next: 'Gold' };
   return { label: '🥉 Bronze', cls: 't-bronze', next: 'Silver' };
 }
 
@@ -551,7 +553,22 @@ function updatePinDots() {
 
 // ===== INITIALIZATION =====
 
+window.appSettings = { silverThreshold: 100, goldThreshold: 300 };
+
+async function loadAppSettings() {
+  try {
+    const res = await fetch('/api/settings?t=' + Date.now());
+    const settings = await res.json();
+    window.appSettings.silverThreshold = settings.silverThreshold || 100;
+    window.appSettings.goldThreshold = settings.goldThreshold || 300;
+  } catch (err) {
+    console.error('Error loading app settings:', err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  await loadAppSettings();
+
   try {
     const res = await fetch('/api/session');
     const session = await res.json();
@@ -883,11 +900,13 @@ function aTab(tab) {
   document.getElementById('apanel-m').style.display = tab === 'm' ? 'block' : 'none';
   document.getElementById('apanel-a').style.display = tab === 'a' ? 'block' : 'none';
   document.getElementById('apanel-s').style.display = tab === 's' ? 'block' : 'none';
+  document.getElementById('apanel-p').style.display = tab === 'p' ? 'block' : 'none';
 
   document.getElementById('atab-r').classList.toggle('on', tab === 'r');
   document.getElementById('atab-m').classList.toggle('on', tab === 'm');
   document.getElementById('atab-a').classList.toggle('on', tab === 'a');
   document.getElementById('atab-s').classList.toggle('on', tab === 's');
+  document.getElementById('atab-p').classList.toggle('on', tab === 'p');
 
   if (tab === 'm') {
     renderMemberList();
@@ -896,6 +915,10 @@ function aTab(tab) {
     loadMembersForAdminFilter().then(() => {
       renderAudit();
     });
+  } else if (tab === 's') {
+    loadSettings();
+  } else if (tab === 'p') {
+    renderPromoList();
   }
 }
 
@@ -1110,9 +1133,10 @@ async function loadAdminDashboardExtras() {
     // Force fresh data with timestamp
     const membersRes = await fetch('/api/admin/members?t=' + Date.now());
     const members = await membersRes.json();
-    const bronze = members.filter(m => m.poin < 100).length;
-    const silver = members.filter(m => m.poin >= 100 && m.poin < 300).length;
-    const gold = members.filter(m => m.poin >= 300).length;
+    const { silverThreshold, goldThreshold } = window.appSettings;
+    const bronze = members.filter(m => m.poin < silverThreshold).length;
+    const silver = members.filter(m => m.poin >= silverThreshold && m.poin < goldThreshold).length;
+    const gold = members.filter(m => m.poin >= goldThreshold).length;
 
     document.getElementById('r-bz').textContent = bronze;
     document.getElementById('r-sv').textContent = silver;
@@ -1144,5 +1168,189 @@ async function loadAdminDashboardExtras() {
       : '—';
   } catch (err) {
     console.error('Error loading dashboard extras:', err);
+  }
+}
+
+
+// ===== PROMO MANAGEMENT (ADMIN) =====
+
+async function renderPromoList() {
+  try {
+    const res = await fetch('/api/hadiah?t=' + Date.now());
+    const hadiah = await res.json();
+
+    const el = document.getElementById('p-list');
+    if (!hadiah.length) {
+      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Belum ada promo</div>';
+      return;
+    }
+
+    el.innerHTML = hadiah.map(h => {
+      const namaEsc = h.nama.replace(/'/g, "\\'");
+      const descEsc = (h.desc || '').replace(/'/g, "\\'");
+      return `
+      <div class="hadiah-item">
+        <div class="hadiah-item-info">
+          <div class="hadiah-item-nama">${h.nama}</div>
+          <div class="hadiah-item-desc">${h.desc || ''}</div>
+          <div class="hadiah-item-poin">${h.poin} poin</div>
+        </div>
+        <div class="hadiah-item-btns">
+          <button class="btn-edit" onclick="editPromoPrompt(${h.id}, '${namaEsc}', '${descEsc}', ${h.poin})">Edit</button>
+          <button class="btn-hapus" onclick="confirmDeletePromo(${h.id}, '${namaEsc}')">Hapus</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('Error rendering promo list:', err);
+  }
+}
+
+async function tambahPromo() {
+  const nama = document.getElementById('p-nama').value.trim();
+  const desc = document.getElementById('p-desc').value.trim();
+  const poin = parseInt(document.getElementById('p-poin').value);
+
+  if (!nama || !poin || poin <= 0) {
+    toast('Isi nama dan poin dengan benar');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin/hadiah', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nama, desc, poin })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    toast('Promo ditambahkan');
+    document.getElementById('p-nama').value = '';
+    document.getElementById('p-desc').value = '';
+    document.getElementById('p-poin').value = '';
+    renderPromoList();
+  } catch (err) {
+    toast(err.message || 'Gagal menambah promo');
+  }
+}
+
+function editPromoPrompt(id, nama, desc, poin) {
+  const bodyHTML = `
+    <div class="field"><label>Nama Promo</label><input id="ep-nama" type="text" value="${nama.replace(/"/g, '&quot;')}"></div>
+    <div class="field"><label>Deskripsi</label><input id="ep-desc" type="text" value="${desc.replace(/"/g, '&quot;')}"></div>
+    <div class="field"><label>Poin Dibutuhkan</label><input id="ep-poin" type="number" min="1" value="${poin}"></div>
+  `;
+
+  showModal('Edit Promo', bodyHTML, async () => {
+    await updatePromo(id);
+  }, 'Simpan', 'Batal');
+}
+
+async function updatePromo(id) {
+  const nama = document.getElementById('ep-nama').value.trim();
+  const desc = document.getElementById('ep-desc').value.trim();
+  const poin = parseInt(document.getElementById('ep-poin').value);
+
+  if (!nama || !poin || poin <= 0) {
+    toast('Isi nama dan poin dengan benar');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/admin/hadiah/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nama, desc, poin })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    toast('Promo diperbarui');
+    renderPromoList();
+  } catch (err) {
+    toast(err.message || 'Gagal memperbarui promo');
+  }
+}
+
+function confirmDeletePromo(id, nama) {
+  const bodyHTML = `
+    <div class="preview">
+      <div class="preview-row"><span>Promo</span><span class="val">${nama}</span></div>
+    </div>
+  `;
+
+  showModal('Hapus Promo?', bodyHTML, async () => {
+    await deletePromo(id);
+  }, 'Hapus', 'Batal');
+}
+
+async function deletePromo(id) {
+  try {
+    const res = await fetch(`/api/admin/hadiah/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+
+    if (!res.ok) {
+      toast(data.error || 'Gagal menghapus promo');
+      return;
+    }
+
+    toast('Promo dihapus');
+    renderPromoList();
+  } catch (err) {
+    console.error('Delete promo error:', err);
+    toast('Error: ' + err.message);
+  }
+}
+
+
+// ===== SETTINGS (ADMIN) =====
+
+async function loadSettings() {
+  try {
+    const res = await fetch('/api/settings?t=' + Date.now());
+    const settings = await res.json();
+
+    document.getElementById('set-n').value = settings.nominalPerPoin;
+    document.getElementById('set-sv').value = settings.silverThreshold;
+    document.getElementById('set-gd').value = settings.goldThreshold;
+  } catch (err) {
+    console.error('Error loading settings:', err);
+  }
+}
+
+async function simpanSetting() {
+  const nominalPerPoin = parseInt(document.getElementById('set-n').value);
+  const silverThreshold = parseInt(document.getElementById('set-sv').value);
+  const goldThreshold = parseInt(document.getElementById('set-gd').value);
+
+  if (!nominalPerPoin || nominalPerPoin <= 0 || !silverThreshold || silverThreshold <= 0 || !goldThreshold || goldThreshold <= 0) {
+    toast('Isi setting dengan benar');
+    return;
+  }
+
+  try {
+    const updates = [
+      { key: 'nominalPerPoin', value: nominalPerPoin },
+      { key: 'silverThreshold', value: silverThreshold },
+      { key: 'goldThreshold', value: goldThreshold }
+    ];
+
+    for (const u of updates) {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(u)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+    }
+
+    await loadAppSettings();
+    toast('Setting berhasil disimpan');
+  } catch (err) {
+    toast(err.message || 'Gagal menyimpan setting');
   }
 }
