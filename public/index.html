@@ -6,1847 +6,796 @@
 <title>Merindu Donat</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --brown:#2D1B0A; --caramel:#E67E22; --glaze:#F39C12; --pink:#E74C3C;
-  --cream:#FBF8F3; --cream2:#F5F0E8; --white:#FFFFFF;
-  --muted:#8B7355; --border:#E8DCC8;
+:root {
+  --brown: #2D1B0A; --caramel: #E67E22; --glaze: #F39C12; --pink: #E74C3C;
+  --cream: #FBF8F3; --cream2: #F5F0E8; --white: #FFFFFF;
+  --muted: #8B7355; --border: #E8DCC8;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh;line-height:1.6;}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--brown); min-height: 100vh; line-height: 1.6; }
+button, input, select { transition: all .2s ease; }
+input:focus, select:focus { transform: scale(1.01); }
 
-/* SMOOTH TRANSITIONS */
-button, input, select{transition:all .2s ease;}
-input:focus, select:focus{transform:scale(1.01);}
+.hamburger { display: none; position: fixed; top: 16px; left: 16px; z-index: 100; background: none; border: none; color: var(--brown); font-size: 24px; cursor: pointer; padding: 8px; }
+@media (max-width: 440px) { .hamburger { display: block; } }
+.mobile-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--white); z-index: 90; flex-direction: column; padding-top: 70px; padding-left: 20px; }
+.mobile-menu.show { display: flex; }
+.mobile-menu button { display: block; padding: 16px 0; border: none; background: none; text-align: left; font-size: 16px; color: var(--brown); cursor: pointer; border-bottom: 1px solid var(--border); font-family: 'DM Sans', sans-serif; font-weight: 500; }
 
-/* HAMBURGER MENU */
-.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:100;background:none;border:none;color:var(--brown);font-size:24px;cursor:pointer;padding:8px;}
-@media (max-width: 440px) {
-  .hamburger{display:block;}
-}
-.mobile-menu{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--white);z-index:90;flex-direction:column;padding-top:70px;padding-left:20px;animation:slideInLeft .3s ease-out;}
-.mobile-menu.show{display:flex;}
-.mobile-menu-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--brown);}
-.mobile-menu a, .mobile-menu button{display:block;padding:16px 0;border:none;background:none;text-align:left;font-size:16px;color:var(--brown);cursor:pointer;border-bottom:1px solid var(--border);font-family:'DM Sans',sans-serif;font-weight:500;}
-.mobile-menu button:hover{color:var(--caramel);}
-@keyframes slideInLeft{from{transform:translateX(-100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.page { display: none; max-width: 440px; margin: 0 auto; padding: 20px 14px 80px; min-height: 100vh; }
+.page.show { display: block; }
+h2 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
-/* PAGE */
-.page{display:none;max-width:440px;margin:0 auto;padding:20px 14px 80px;min-height:100vh;}
-.page.show{display:block;animation:fadeIn .3s ease-in-out;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.page-inner{max-width:440px;width:100%;}
+.card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; }
+.field input, .field select { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--brown); outline: none; }
 
-/* HEADINGS */
-h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px;color:var(--brown);}
-.sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.btn { display: block; width: 100%; padding: 13px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; margin-bottom: 10px; text-align: center; }
+.btn-primary { background: var(--caramel); color: #fff; }
+.btn-primary:hover { background: #D56E0E; }
+.btn-secondary { background: var(--cream2); color: var(--brown); border: 1.5px solid var(--border); }
+.btn-link { background: none; border: none; color: var(--caramel); cursor: pointer; text-decoration: underline; }
 
-/* CARD */
-.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.tabs { display: flex; background: var(--cream2); border-radius: 20px; padding: 4px; margin-bottom: 16px; }
+.tab { flex: 1; padding: 8px; border: none; background: none; border-radius: 18px; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.tab.on { background: var(--white); color: var(--brown); }
 
-/* FORM */
-.field{margin-bottom:16px;position:relative;}
-.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase;}
-.field input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--brown);outline:none;}
-.field input:focus{border-color:var(--caramel);box-shadow:0 0 0 3px rgba(230,126,34,.1);}
-.field.password-field{position:relative;display:flex;flex-direction:column;}
-.field.password-field input{width:100%;padding:11px 40px 11px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--brown);outline:none;}
-.password-toggle{position:absolute;right:10px;top:33px;background:none;border:none;color:var(--caramel);cursor:pointer;font-size:18px;padding:0;transition:color .2s ease;z-index:5;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
-.password-toggle:hover{color:#D56E0E;}
-.hint{font-size:11px;color:var(--muted);margin-top:4px;}
+.poin-hero { background: linear-gradient(135deg, var(--brown), #4A2C15); border-radius: 12px; padding: 20px 16px; color: #fff; margin-bottom: 12px; }
+.poin-angka { font-family: 'Fraunces', serif; font-size: 44px; font-weight: 700; color: var(--glaze); }
+.tier-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+.t-bronze { background: rgba(230,126,34,.15); color: #D35400; }
+.t-silver { background: rgba(149,165,166,.15); color: #7F8C8D; }
+.t-gold { background: rgba(241,196,15,.15); color: #F39C12; }
 
-/* BUTTONS */
-.btn{display:block;width:100%;padding:13px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;margin-bottom:10px;text-align:center;transition:all .25s ease;}
-.btn-primary{background:var(--caramel);color:#fff;}
-.btn-primary:hover{background:#D56E0E;transform:translateY(-2px);box-shadow:0 4px 12px rgba(230,126,34,.3);}
-.btn-primary:active{background:#A85A0A;transform:translateY(0);box-shadow:0 1px 3px rgba(230,126,34,.2);}
-.btn-secondary{background:var(--cream2);color:var(--brown);border:1.5px solid var(--border);}
-.btn-secondary:hover{background:var(--border);transform:translateY(-2px);}
-.btn-secondary:active{background:var(--cream2);transform:translateY(0);}
-.btn-link{background:none;border:none;color:var(--caramel);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:underline;padding:0;display:inline;transition:color .2s ease;}
-.btn-link:hover{color:#D56E0E;}
+.tx { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.tx:last-child { border-bottom: none; }
+.tx-nama { font-size: 13px; font-weight: 600; }
+.tx-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.tx-poin { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: var(--caramel); }
+.tx-poin.minus { color: var(--pink); }
 
-/* TABS */
-.tabs{display:flex;background:var(--cream2);border-radius:20px;padding:4px;margin-bottom:16px;}
-.tab{flex:1;padding:8px;border:none;background:none;border-radius:18px;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);cursor:pointer;transition:all .2s ease;}
-.tab.on{background:var(--white);color:var(--brown);box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.hadiah-card { border-radius: 12px; padding: 16px; color: #fff; margin-bottom: 12px; cursor: pointer; }
+.hadiah-card.pink { background: linear-gradient(135deg, #E74C3C, #C0392B); }
+.hadiah-card.caramel { background: linear-gradient(135deg, #E67E22, #D35400); }
+.hadiah-card.dark { background: linear-gradient(135deg, #2D1B0A, #542E1E); }
+.hadiah-card.disabled { opacity: .45; cursor: not-allowed; }
+.hadiah-judul { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.hadiah-desc { font-size: 12px; opacity: .9; }
+.hadiah-footer { display: flex; justify-content: space-between; margin-top: 10px; }
+.hadiah-poin { background: rgba(255,255,255,.25); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.hadiah-warn { font-size: 11px; opacity: .85; }
 
-/* POIN HERO */
-.poin-hero{background:linear-gradient(135deg,var(--brown),#4A2C15);border-radius:12px;padding:20px 16px;color:#fff;margin-bottom:12px;position:relative;overflow:hidden;}
-.poin-hero::after{content:'🍩';position:absolute;right:-6px;top:-6px;font-size:64px;opacity:.1;}
-.poin-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:2px;}
-.poin-nama{font-family:'Fraunces',serif;font-size:16px;margin-bottom:10px;}
-.poin-angka{font-family:'Fraunces',serif;font-size:44px;font-weight:700;color:var(--glaze);line-height:1;}
-.poin-teks{font-size:12px;opacity:.7;margin-top:2px;}
-.poin-id{font-size:10px;opacity:.35;margin-top:12px;}
-.tier-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;margin-top:6px;}
-.t-bronze{background:rgba(230,126,34,.15);color:#D35400;}
-.t-silver{background:rgba(149,165,166,.15);color:#7F8C8D;}
-.t-gold{background:rgba(241,196,15,.15);color:#F39C12;}
+.preview { background: var(--cream2); border: 1.5px dashed var(--border); border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+.preview-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.preview-row .val { font-weight: 600; color: var(--caramel); }
 
-/* PROGRESS */
-.prog{margin:14px 0 8px;}
-.prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.prog-bar{height:6px;background:var(--cream2);border-radius:10px;overflow:hidden;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--caramel),var(--glaze));border-radius:10px;transition:width .6s cubic-bezier(.34,.99,.74,.99);}
-.prog-msg{font-size:12px;color:var(--muted);margin-top:6px;}
+.alert { padding: 9px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 10px; }
+.alert-info { background: #E3F2FD; color: #1565C0; }
+.alert-warn { background: #FFF3E0; color: #E65100; }
 
-/* TX LIST */
-.tx{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);transition:background .15s ease;}
-.tx:hover{background:rgba(230,126,34,.02);}
-.tx:last-child{border-bottom:none;}
-.tx-info{flex:1;}
-.tx-nama{font-size:13px;font-weight:600;color:var(--brown);}
-.tx-date{font-size:11px;color:var(--muted);margin-top:2px;}
-.tx-nom{font-size:12px;color:var(--muted);margin-top:3px;}
-.tx-poin{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--caramel);padding-left:8px;white-space:nowrap;}
-.tx-poin.minus{color:var(--pink);}
+.band { background: var(--brown); margin: -20px -14px 16px; padding: 16px 14px; color: #fff; }
+.band h2 { color: #fff; }
+.band.dark { background: #1A0F05; }
 
-/* HADIAH CARD */
-.hadiah-card{border-radius:12px;padding:16px;color:#fff;margin-bottom:12px;transition:all .25s ease;cursor:pointer;}
-.hadiah-card.pink{background:linear-gradient(135deg,#E74C3C,#C0392B);}
-.hadiah-card.caramel{background:linear-gradient(135deg,#E67E22,#D35400);}
-.hadiah-card.dark{background:linear-gradient(135deg,#2D1B0A,#542E1E);}
-.hadiah-card.disabled{opacity:.45;cursor:not-allowed;}
-.hadiah-card.clickable:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.15);}
-.hadiah-card.clickable:active{transform:scale(.98);}
-.hadiah-judul{font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin-bottom:4px;}
-.hadiah-desc{font-size:12px;opacity:.9;line-height:1.4;}
-.hadiah-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
-.hadiah-poin{background:rgba(255,255,255,.25);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
-.hadiah-warn{font-size:11px;opacity:.85;}
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.stat { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 11px; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--caramel); }
+.stat-lbl { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
-/* PREVIEW BOX */
-.preview{background:var(--cream2);border:1.5px dashed var(--border);border-radius:8px;padding:10px 12px;margin:8px 0;}
-.preview-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;}
-.preview-row:last-child{margin-bottom:0;}
-.preview-row .val{font-weight:600;color:var(--caramel);}
+.rrow { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.rrow:last-child { border-bottom: none; }
+.rval { font-weight: 600; color: var(--caramel); }
 
-/* ALERT */
-.alert{padding:9px 12px;border-radius:8px;font-size:12px;margin-bottom:10px;line-height:1.5;}
-.alert-info{background:#E3F2FD;color:#1565C0;border:1px solid #90CAF9;}
-.alert-warn{background:#FFF3E0;color:#E65100;border:1px solid #FFB74D;}
+.clabel { font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 7px; }
+.hr { height: 1px; background: var(--border); margin: 14px 0; }
 
-/* BAND HEADER */
-.band{background:var(--brown);margin:-20px -14px 16px;padding:16px 14px;color:#fff;}
-.band.dark{background:#1A0F05;}
-.band h2{font-family:'Fraunces',serif;font-size:18px;color:#fff;}
-.band p{font-size:11px;opacity:.8;margin-top:2px;}
+.toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--brown); color: #fff; padding: 12px 20px; border-radius: 20px; font-size: 13px; z-index: 999; transition: transform .3s; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-/* STAT GRID */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-.stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:11px;}
-.stat-num{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--caramel);}
-.stat-num.green{color:#27AE60;}
-.stat-num.pink{color:#E74C3C;}
-.stat-lbl{font-size:10px;color:var(--muted);margin-top:1px;}
+.range-btn { background: var(--cream2); border: 1.5px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; color: var(--muted); white-space: nowrap; }
+.range-btn.on { background: var(--brown); color: #fff; border-color: var(--brown); }
 
-/* REPORT ROW */
-.rrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.rrow:last-child{border-bottom:none;}
-.rval{font-weight:600;color:var(--caramel);}
-.rval.pink{color:var(--pink);}
+#modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; align-items: center; justify-content: center; }
+#modal-overlay.show { display: flex; }
+#modal-overlay > div { background: var(--white); border-radius: 16px; padding: 28px 24px 36px; width: 100%; max-width: 440px; margin: 0 14px; }
+#modal-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+#modal-body { margin-bottom: 24px; }
 
-/* CLABEL */
-.clabel{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:7px;}
-
-/* DIVIDER */
-.hr{height:1px;background:var(--border);margin:14px 0;}
-
-/* PIN PAD */
-.pin-dots{display:flex;gap:10px;justify-content:center;margin:14px 0;}
-.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);}
-.pin-dot.on{background:var(--caramel);border-color:var(--caramel);}
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:210px;margin:0 auto;}
-.pin-key{padding:13px;border:1.5px solid var(--border);border-radius:8px;font-size:18px;font-weight:700;cursor:pointer;background:var(--white);color:var(--brown);font-family:'Fraunces',serif;text-align:center;}
-.pin-key:active{background:var(--cream2);}
-.pin-key.ok{background:var(--caramel);color:#fff;border-color:var(--caramel);font-size:13px;}
-
-/* LANDING HERO */
-.hero{text-align:center;padding:40px 0 32px;}
-.donut{width:auto;height:auto;background:transparent;border-radius:50%;font-size:40px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
-.hero h1{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1.3;margin-bottom:12px;color:var(--brown);}
-.hero h1 em{font-style:italic;color:var(--caramel);}
-.hero p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:28px;}
-
-/* TOAST */
-.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--brown);color:#fff;padding:12px 20px;border-radius:20px;font-size:13px;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:88vw;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);}
-.toast.show{transform:translateX(-50%) translateY(0);}
-
-/* HADIAH ADMIN ITEM */
-.hadiah-item{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);}
-.hadiah-item:last-child{border-bottom:none;}
-.hadiah-item-info{flex:1;}
-.hadiah-item-nama{font-size:13px;font-weight:600;}
-.hadiah-item-desc{font-size:11px;color:var(--muted);}
-.hadiah-item-poin{font-size:11px;color:var(--caramel);font-weight:600;margin-top:2px;}
-.hadiah-item-btns{display:flex;gap:5px;flex-shrink:0;}
-.btn-edit{background:var(--cream2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.btn-hapus{background:#fdecea;border:1px solid #f5c6c0;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;color:#c0392b;}
-.range-btn{background:var(--cream2);border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted);white-space:nowrap;}
-.range-btn.on{background:var(--brown);color:#fff;border-color:var(--brown);}
+.btn-hapus { background: #fdecea; border: 1px solid #f5c6c0; border-radius: 6px; padding: 3px 8px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; color: #c0392b; }
 </style>
 </head>
 <body>
 
-<nav style="display:none;"></nav>
 <div class="toast" id="toast"></div>
 <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
 <div class="mobile-menu" id="mobile-menu">
-  <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
   <button onclick="toggleMobileMenu(); showPage('login-member')">Masuk Member</button>
   <button onclick="toggleMobileMenu(); showPage('daftar')">Daftar Member</button>
   <button onclick="toggleMobileMenu(); showPage('login-karyawan')">Masuk Karyawan</button>
-  <button onclick="toggleMobileMenu(); showPage('login-admin')">Admin Portal</button>
+  <button onclick="toggleMobileMenu(); showPage('login-admin')">Admin</button>
 </div>
 
-<!-- ===== LANDING ===== -->
+<!-- LANDING -->
 <div class="page show" id="pg-landing">
-  <div class="hero">
-    <div class="donut" style="background:none;box-shadow:none;"><img src="Logo Merindu.png" alt="Logo Merindu" style="width:100%;height:auto;max-width:130px;"></div>
-    <h1>Selamat datang di<br><em>Merindu Donat</em></h1>
-    <p>Kumpulkan poin setiap pembelian.<br>Tukar dengan hadiah spesial.</p>
-    <button class="btn btn-primary" onclick="showPage('login-member')">Masuk sebagai Member</button>
-    <button class="btn btn-secondary" onclick="showPage('daftar')">Daftar Member Baru</button>
-    <div style="margin-top:10px;">
-      <button class="btn-link" onclick="showPage('login-karyawan')">Masuk sebagai Karyawan →</button>
+  <div style="text-align: center; padding: 40px 0;">
+    <img src="Logo Merindu.png" alt="Logo" style="width: 130px; margin: 0 auto 24px;">
+    <h1 style="font-family: 'Fraunces', serif; font-size: 28px; margin-bottom: 12px;">Merindu Donat</h1>
+    <p style="color: var(--muted); margin-bottom: 28px;">Kumpulkan poin, tukar hadiah</p>
+    <button class="btn btn-primary" onclick="showPage('login-member')">Masuk Member</button>
+    <button class="btn btn-secondary" onclick="showPage('daftar')">Daftar Member</button>
+    <button class="btn-link" onclick="showPage('login-karyawan')" style="margin-top: 10px;">Masuk Karyawan →</button>
+    <div style="position: fixed; bottom: 20px; right: 20px;">
+      <button style="background: none; border: 1px solid var(--border); color: var(--muted); padding: 8px 14px; border-radius: 20px; cursor: pointer;" onclick="showPage('login-admin')">⚙ Admin</button>
     </div>
   </div>
-  <div style="position:fixed;bottom:20px;right:20px;z-index:10;">
-    <button style="background:none;border:1px solid var(--border);color:var(--muted);padding:8px 14px;border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s ease;font-family:'DM Sans',sans-serif;font-weight:500;" onclick="showPage('login-admin')" onmouseover="this.style.background='var(--cream2)'" onmouseout="this.style.background='none'">⚙ Admin</button>
-  </div>
 </div>
 
-<!-- ===== DAFTAR ===== -->
+<!-- DAFTAR -->
 <div class="page" id="pg-daftar">
   <h2>Daftar Member</h2>
   <div class="sub">Gratis. Kumpulkan poin dari transaksi pertama.</div>
   <div class="card">
-    <div class="field"><label>Nama Lengkap</label><input id="r-nama" type="text" placeholder="Contoh: Sari Dewi" autocomplete="off"></div>
-    <div class="field"><label>Nomor HP</label><input id="r-hp" type="tel" placeholder="08xxxxxxxxxx" autocomplete="off"><div class="hint">Nomor HP = ID Member Anda</div></div>
-    <div class="field password-field"><label>PIN 4 digit</label><input id="r-pin" type="password" placeholder="••••" maxlength="4" autocomplete="new-password"><button class="password-toggle" onclick="togglePasswordVisibility('r-pin')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div>
-    <button class="btn btn-primary" onclick="daftar()">Daftar Sekarang</button>
+    <div class="field"><label>Nama</label><input id="r-nama" type="text" placeholder="Contoh: Sari Dewi"></div>
+    <div class="field"><label>Nomor HP</label><input id="r-hp" type="tel" placeholder="08xxxxxxxxxx"></div>
+    <div class="field"><label>PIN 4 digit</label><input id="r-pin" type="password" placeholder="••••" maxlength="4"></div>
+    <button class="btn btn-primary" onclick="daftar()">Daftar</button>
     <button class="btn btn-secondary" onclick="showPage('landing')">Kembali</button>
   </div>
 </div>
 
-<!-- ===== LOGIN MEMBER ===== -->
+<!-- LOGIN MEMBER -->
 <div class="page" id="pg-login-member">
   <h2>Masuk Member</h2>
-  <div class="sub">Gunakan nomor HP dan PIN Anda.</div>
+  <div class="sub">Nomor HP dan PIN</div>
   <div class="card">
-    <div class="field"><label>Nomor HP</label><input id="lm-hp" type="tel" placeholder="08xxxxxxxxxx" autocomplete="off"></div>
-    <div class="field password-field"><label>PIN</label><input id="lm-pin" type="password" placeholder="••••" maxlength="4" autocomplete="new-password"><button class="password-toggle" onclick="togglePasswordVisibility('lm-pin')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div>
+    <div class="field"><label>Nomor HP</label><input id="lm-hp" type="tel" placeholder="08xxxxxxxxxx"></div>
+    <div class="field"><label>PIN</label><input id="lm-pin" type="password" placeholder="••••" maxlength="4"></div>
     <button class="btn btn-primary" onclick="loginMember()">Masuk</button>
     <button class="btn btn-secondary" onclick="showPage('landing')">Kembali</button>
   </div>
-  <div style="text-align:center;margin-top:8px;">
-    <span style="font-size:12px;color:var(--muted)">Belum punya akun? </span>
-    <button class="btn-link" onclick="showPage('daftar')">Daftar</button>
-  </div>
 </div>
 
-<!-- ===== DASHBOARD MEMBER ===== -->
+<!-- DASHBOARD MEMBER -->
 <div class="page" id="pg-dashboard">
   <div class="poin-hero">
-    <div class="poin-label">Saldo Poin</div>
-    <div class="poin-nama" id="m-nama">—</div>
+    <div style="font-size: 10px; opacity: .6;">SALDO POIN</div>
+    <div id="m-nama" style="font-size: 16px; margin-bottom: 10px;">—</div>
     <div class="poin-angka" id="m-poin">0</div>
-    <div class="poin-teks">poin terkumpul</div>
     <div id="m-tier" class="tier-badge t-bronze">🥉 Bronze</div>
-    <div class="poin-id" id="m-id">ID: —</div>
-  </div>
-  <div class="card">
-    <div class="clabel">Progress tier</div>
-    <div class="prog">
-      <div class="prog-labels"><span id="m-tier-cur">Bronze</span><span id="m-tier-nxt">Silver (100 poin)</span></div>
-      <div class="prog-bar"><div class="prog-fill" id="m-prog" style="width:0%"></div></div>
-    </div>
-    <div class="prog-msg" id="m-prog-msg"></div>
   </div>
   <div class="tabs">
-    <button class="tab on" id="tab-riwayat" onclick="mTab('riwayat')">Riwayat Belanja</button>
-    <button class="tab" id="tab-hadiah" onclick="mTab('hadiah')">Program Hadiah</button>
+    <button class="tab on" onclick="mTab('riwayat')">Riwayat</button>
+    <button class="tab" onclick="mTab('hadiah')">Hadiah</button>
   </div>
   <div id="panel-riwayat">
     <div class="card" id="m-tx-list"></div>
   </div>
   <div id="panel-hadiah" style="display:none">
-    <div class="alert alert-info">Tunjukkan ID Member ke kasir untuk menukar poin. Karyawan yang memproses.</div>
+    <div class="alert alert-info">Tunjukkan ID ke kasir untuk menukar poin</div>
     <div id="m-hadiah-list"></div>
-    <div class="alert alert-warn" style="margin-top:4px;">Program dapat berubah sewaktu-waktu.</div>
   </div>
-  <div class="hr"></div>
-  <button class="btn btn-secondary" onclick="confirmLogout('member')">Keluar</button>
+  <button class="btn btn-secondary" onclick="logoutMember()">Keluar</button>
 </div>
 
-<!-- ===== LOGIN KARYAWAN ===== -->
+<!-- LOGIN KARYAWAN -->
 <div class="page" id="pg-login-karyawan">
   <h2>Masuk Karyawan</h2>
-  <div class="sub">Input transaksi dan proses penukaran poin.</div>
   <div class="card">
-    <div class="field"><label>Username</label><input id="lk-user" type="text" placeholder="kasir01" autocomplete="off"></div>
-    <div class="field password-field"><label>Password</label><input id="lk-pass" type="password" placeholder="••••••" autocomplete="new-password"><button class="password-toggle" onclick="togglePasswordVisibility('lk-pass')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></button></div>
+    <div class="field"><label>Username</label><input id="lk-user" type="text" placeholder="kasir01"></div>
+    <div class="field"><label>Password</label><input id="lk-pass" type="password" placeholder="••••••"></div>
     <button class="btn btn-primary" onclick="loginKaryawan()">Masuk</button>
     <button class="btn btn-secondary" onclick="showPage('landing')">Kembali</button>
   </div>
 </div>
 
-<!-- ===== PANEL KARYAWAN ===== -->
+<!-- PANEL KARYAWAN -->
 <div class="page" id="pg-karyawan">
   <div class="band">
     <h2>Panel Karyawan</h2>
     <p id="k-label">—</p>
   </div>
   <div class="tabs">
-    <button class="tab on" id="ktab-tx"  onclick="kTab('tx')">Input Transaksi</button>
-    <button class="tab" id="ktab-rdm" onclick="kTab('rdm')">Tukar Poin</button>
-    <button class="tab" id="ktab-his" onclick="kTab('his')">Riwayat</button>
+    <button class="tab on" onclick="kTab('tx')">Transaksi</button>
+    <button class="tab" onclick="kTab('rdm')">Tukar Poin</button>
+    <button class="tab" onclick="kTab('his')">Riwayat</button>
   </div>
 
   <!-- Input Transaksi -->
   <div id="kpanel-tx">
     <div class="card">
-      <div class="field">
-        <label>ID Member / Nomor HP</label>
-        <input id="tx-id" type="tel" placeholder="08xxxxxxxxxx">
-      </div>
+      <div class="field"><label>ID Member</label><input id="tx-id" type="tel" placeholder="08xxxxxxxxxx"></div>
       <div id="tx-member-info" style="display:none" class="preview"></div>
-      <div id="tx-not-found" style="display:none" class="alert alert-warn">ID tidak ditemukan.</div>
-      <button class="btn btn-secondary" onclick="cariMemberTx()" style="margin-bottom:12px;">Cari Member</button>
+      <button class="btn btn-secondary" onclick="cariMemberTx()" style="margin-bottom:12px;">Cari</button>
       <div class="field"><label>Tanggal</label><input id="tx-tgl" type="date"></div>
-      <div class="field">
-        <label>Nominal Belanja (Rp)</label>
-        <input id="tx-nominal" type="number" placeholder="75000">
-        <div class="hint" id="tx-hint">Rp25.000 = 1 poin</div>
-      </div>
-      <div id="tx-poin-preview" style="display:none" class="preview"></div>
-      <button class="btn btn-primary" onclick="hitungLaluSimpan()">Hitung & Simpan Transaksi</button>
+      <div class="field"><label>Nominal (Rp)</label><input id="tx-nominal" type="number" placeholder="75000"></div>
+      <button class="btn btn-primary" onclick="simpanTx()">Simpan</button>
     </div>
   </div>
 
   <!-- Tukar Poin -->
   <div id="kpanel-rdm" style="display:none">
     <div class="card">
-      <div class="field">
-        <label>ID Member / Nomor HP</label>
-        <input id="rdm-id" type="tel" placeholder="08xxxxxxxxxx">
-      </div>
+      <div class="field"><label>ID Member</label><input id="rdm-id" type="tel" placeholder="08xxxxxxxxxx"></div>
       <div id="rdm-member-info" style="display:none" class="preview"></div>
-      <div id="rdm-not-found" style="display:none" class="alert alert-warn">ID tidak ditemukan.</div>
-      <button class="btn btn-secondary" onclick="cariMemberRdm()">Cari Member</button>
+      <button class="btn btn-secondary" onclick="cariMemberRdm()">Cari</button>
     </div>
-    <div id="rdm-hadiah-list" style="display:none">
-      <div class="clabel" style="margin-top:4px;margin-bottom:8px;">Pilih Hadiah</div>
-    </div>
+    <div id="rdm-hadiah-list" style="display:none"></div>
   </div>
 
-  <!-- Riwayat Karyawan -->
+  <!-- Riwayat -->
   <div id="kpanel-his" style="display:none">
     <div class="card">
-      <div class="clabel" style="margin-bottom:8px;">Filter Periode</div>
+      <div class="clabel">Filter</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;" id="k-range-btns">
         <button class="range-btn on" onclick="setKRange('today')">Hari Ini</button>
-        <button class="range-btn" onclick="setKRange('week')">Minggu Ini</button>
-        <button class="range-btn" onclick="setKRange('month')">Bulan Ini</button>
-        <button class="range-btn" onclick="setKRange('6month')">6 Bulan</button>
-        <button class="range-btn" onclick="setKRange('all')">All Time</button>
-        <button class="range-btn" onclick="setKRange('custom')">Custom</button>
-      </div>
-      <div id="k-custom-range" style="display:none;gap:8px;margin-bottom:10px;">
-        <div class="field" style="margin-bottom:6px;"><label>Dari</label><input id="k-tgl-dari" type="date" oninput="renderRiwayatKaryawan()"></div>
-        <div class="field" style="margin-bottom:0;"><label>Sampai</label><input id="k-tgl-sampai" type="date" oninput="renderRiwayatKaryawan()"></div>
-      </div>
-      <div class="field">
-        <label>Filter Member</label>
-        <select id="k-member-select" onchange="renderRiwayatKaryawan()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--brown);outline:none;">
-          <option value="">— Semua Member —</option>
-        </select>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:4px;">
-        <button class="tab on" id="khtab-all" style="flex:1;" onclick="kHisTab('all')">Semua</button>
-        <button class="tab" id="khtab-tambah" style="flex:1;" onclick="kHisTab('tambah')">+Poin</button>
-        <button class="tab" id="khtab-redeem" style="flex:1;" onclick="kHisTab('redeem')">Redeem</button>
+        <button class="range-btn" onclick="setKRange('week')">Minggu</button>
+        <button class="range-btn" onclick="setKRange('month')">Bulan</button>
+        <button class="range-btn" onclick="setKRange('all')">Semua</button>
       </div>
     </div>
     <div id="k-his-summary" style="display:none" class="preview"></div>
     <div class="card" id="k-his-list"></div>
   </div>
 
-  <div class="hr"></div>
-  <button class="btn btn-secondary" onclick="confirmLogout('karyawan')">Keluar</button>
+  <button class="btn btn-secondary" onclick="logoutKaryawan()">Keluar</button>
 </div>
 
-<!-- ===== MODAL KONFIRMASI ===== -->
-<div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;animation:fadeIn .2s ease-out;">
-  <div style="background:var(--white);border-radius:16px;padding:28px 24px 36px;width:100%;max-width:440px;margin:0 14px;animation:scaleIn .3s cubic-bezier(.34,1.56,.64,1);">
-    <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:16px;color:var(--brown);" id="modal-title">Konfirmasi</div>
-    <div id="modal-body" style="margin-bottom:24px;"></div>
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div>
+    <div id="modal-title">Konfirmasi</div>
+    <div id="modal-body"></div>
     <button class="btn btn-primary" id="modal-ok">Lanjutkan</button>
-    <button class="btn btn-secondary" id="modal-cancel" onclick="closeModal()">Batal</button>
-  </div>
-</div>
-<style>
-@keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes scaleIn{from{transform:scale(.95);opacity:0;}to{transform:scale(1);opacity:1;}}
-</style>
-<div class="page" id="pg-login-admin">
-  <h2>Super Admin</h2>
-  <div class="sub">Masukkan PIN admin.</div>
-  <div class="card" style="text-align:center;">
-    <div class="pin-dots">
-      <div class="pin-dot" id="pd0"></div>
-      <div class="pin-dot" id="pd1"></div>
-      <div class="pin-dot" id="pd2"></div>
-      <div class="pin-dot" id="pd3"></div>
-    </div>
-    <div class="pin-pad">
-      <button class="pin-key" onclick="pinTap('1')">1</button>
-      <button class="pin-key" onclick="pinTap('2')">2</button>
-      <button class="pin-key" onclick="pinTap('3')">3</button>
-      <button class="pin-key" onclick="pinTap('4')">4</button>
-      <button class="pin-key" onclick="pinTap('5')">5</button>
-      <button class="pin-key" onclick="pinTap('6')">6</button>
-      <button class="pin-key" onclick="pinTap('7')">7</button>
-      <button class="pin-key" onclick="pinTap('8')">8</button>
-      <button class="pin-key" onclick="pinTap('9')">9</button>
-      <button class="pin-key" onclick="pinTap('del')" style="font-size:14px;">⌫</button>
-      <button class="pin-key" onclick="pinTap('0')">0</button>
-      <button class="pin-key ok" onclick="pinTap('ok')">OK</button>
-    </div>
-    <div style="margin-top:12px;"><button class="btn-link" onclick="showPage('landing')">Kembali</button></div>
+    <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
   </div>
 </div>
 
-<!-- ===== ADMIN DASHBOARD ===== -->
+<!-- LOGIN ADMIN -->
+<div class="page" id="pg-login-admin">
+  <h2>Admin PIN</h2>
+  <div class="card" style="text-align:center;">
+    <div style="display:flex;gap:10px;justify-content:center;margin:14px 0;">
+      <div id="pd0" style="width:13px;height:13px;border-radius:50%;border:2px solid var(--border);"></div>
+      <div id="pd1" style="width:13px;height:13px;border-radius:50%;border:2px solid var(--border);"></div>
+      <div id="pd2" style="width:13px;height:13px;border-radius:50%;border:2px solid var(--border);"></div>
+      <div id="pd3" style="width:13px;height:13px;border-radius:50%;border:2px solid var(--border);"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:210px;margin:0 auto;">
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('1')">1</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('2')">2</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('3')">3</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('4')">4</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('5')">5</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('6')">6</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('7')">7</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('8')">8</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('9')">9</button>
+      <button class="btn" style="padding:13px;margin:0;grid-column:2;" onclick="pinTap('0')">0</button>
+      <button class="btn" style="padding:13px;margin:0;" onclick="pinTap('del')">⌫</button>
+      <button class="btn btn-primary" style="padding:13px;margin:0;" onclick="pinTap('ok')">OK</button>
+    </div>
+    <button class="btn-link" onclick="showPage('landing')" style="margin-top:12px;">Kembali</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
 <div class="page" id="pg-admin">
   <div class="band dark">
-    <h2>Super Admin</h2>
-    <p>Merindu Donat Membership</p>
+    <h2>Admin Dashboard</h2>
+    <p>Merindu Donat</p>
   </div>
   <div class="tabs">
-    <button class="tab on" id="atab-r" onclick="aTab('r')">Ringkasan</button>
-    <button class="tab" id="atab-m" onclick="aTab('m')">Member</button>
-    <button class="tab" id="atab-a" onclick="aTab('a')">Audit</button>
-    <button class="tab" id="atab-s" onclick="aTab('s')">Setting</button>
+    <button class="tab on" onclick="aTab('r')">Ringkasan</button>
+    <button class="tab" onclick="aTab('m')">Member</button>
+    <button class="tab" onclick="aTab('a')">Audit</button>
   </div>
 
   <!-- Ringkasan -->
   <div id="apanel-r">
     <div class="stats">
-      <div class="stat"><div class="stat-num" id="s-mem">0</div><div class="stat-lbl">Total Member</div></div>
+      <div class="stat"><div class="stat-num" id="s-mem">0</div><div class="stat-lbl">Member</div></div>
       <div class="stat"><div class="stat-num" id="s-tx">0</div><div class="stat-lbl">Transaksi</div></div>
-      <div class="stat"><div class="stat-num green" id="s-omset">0</div><div class="stat-lbl">Omset (Rp)</div></div>
-      <div class="stat"><div class="stat-num pink" id="s-rdm">0</div><div class="stat-lbl">Total Redeem</div></div>
-    </div>
-    <div class="stats">
-      <div class="stat"><div class="stat-num" id="s-poin-beredar">0</div><div class="stat-lbl">Poin Beredar</div></div>
-      <div class="stat"><div class="stat-num" id="s-poin-keluar">0</div><div class="stat-lbl">Poin Ditukar</div></div>
-    </div>
-    <div class="card">
-      <div class="clabel">Distribusi Tier</div>
-      <div class="rrow"><span>🥉 Bronze</span><span class="rval" id="r-bz">—</span></div>
-      <div class="rrow"><span>🥈 Silver</span><span class="rval" id="r-sv">—</span></div>
-      <div class="rrow"><span>🥇 Gold</span><span class="rval" id="r-gd">—</span></div>
-    </div>
-    <div class="card">
-      <div class="clabel">Hadiah Terpopuler</div>
-      <div id="r-popular">—</div>
-    </div>
-    <div class="card">
-      <div class="clabel">Aktivitas Karyawan</div>
-      <div id="r-karyawan">—</div>
+      <div class="stat"><div class="stat-num" id="s-rdm">0</div><div class="stat-lbl">Redeem</div></div>
+      <div class="stat"><div class="stat-num" id="s-omset">0</div><div class="stat-lbl">Omset</div></div>
     </div>
   </div>
 
   <!-- Member -->
   <div id="apanel-m" style="display:none">
-    <div class="field"><label>Cari</label><input id="a-cari" type="text" placeholder="Nama atau nomor HP..." oninput="renderMemberList()"></div>
+    <div class="field"><label>Cari</label><input type="text" placeholder="Nama..." oninput="renderMemberList()"></div>
     <div class="card" id="a-member-list"></div>
   </div>
 
   <!-- Audit -->
   <div id="apanel-a" style="display:none">
     <div class="card">
-      <div class="clabel" style="margin-bottom:8px;">Filter Periode</div>
+      <div class="clabel">Filter</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;" id="a-range-btns">
         <button class="range-btn on" onclick="setARange('today')">Hari Ini</button>
-        <button class="range-btn" onclick="setARange('week')">Minggu Ini</button>
-        <button class="range-btn" onclick="setARange('month')">Bulan Ini</button>
-        <button class="range-btn" onclick="setARange('6month')">6 Bulan</button>
-        <button class="range-btn" onclick="setARange('all')">All Time</button>
-        <button class="range-btn" onclick="setARange('custom')">Custom</button>
-      </div>
-      <div id="a-custom-range" style="display:none;gap:8px;margin-bottom:10px;">
-        <div class="field" style="margin-bottom:6px;"><label>Dari</label><input id="a-tgl-dari" type="date" oninput="renderAudit()"></div>
-        <div class="field" style="margin-bottom:0;"><label>Sampai</label><input id="a-tgl-sampai" type="date" oninput="renderAudit()"></div>
-      </div>
-      <div class="field"><label>Filter Member</label>
-        <select id="a-member-select" onchange="renderAudit()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--brown);outline:none;">
-          <option value="">— Semua Member —</option>
-        </select>
-      </div>
-      <div style="display:flex;gap:6px;">
-        <button class="tab on" id="atab-all" style="flex:1;" onclick="aHisTab('all')">Semua</button>
-        <button class="tab" id="atab-tambah" style="flex:1;" onclick="aHisTab('tambah')">+Poin</button>
-        <button class="tab" id="atab-redeem" style="flex:1;" onclick="aHisTab('redeem')">Redeem</button>
+        <button class="range-btn" onclick="setARange('week')">Minggu</button>
+        <button class="range-btn" onclick="setARange('month')">Bulan</button>
+        <button class="range-btn" onclick="setARange('all')">Semua</button>
       </div>
     </div>
-    <div id="a-audit-summary" style="display:none" class="preview"></div>
-    <div class="card" id="a-audit-list"></div>
+    <div id="a-his-summary" style="display:none" class="preview"></div>
+    <div class="card" id="a-his-list"></div>
   </div>
 
-  <!-- Setting -->
-  <div id="apanel-s" style="display:none">
-    <div class="card">
-      <div class="clabel">Program Poin</div>
-      <div class="field"><label>Nominal per 1 poin (Rp)</label><input id="set-n" type="number" value="25000"></div>
-      <div class="field"><label>Silver threshold (poin)</label><input id="set-sv" type="number" value="100"></div>
-      <div class="field"><label>Gold threshold (poin)</label><input id="set-gd" type="number" value="300"></div>
-      <button class="btn btn-primary" onclick="simpanSetting()">Simpan Setting</button>
-    </div>
-    <div class="card">
-      <div class="clabel">Program Hadiah</div>
-      <div id="hadiah-admin-list"></div>
-      <div class="hr"></div>
-      <div class="clabel" style="margin-top:4px;">Tambah Hadiah Baru</div>
-      <div class="field"><label>Nama Hadiah</label><input id="h-nama" type="text" placeholder="Contoh: Donat Gratis 2 pcs"></div>
-      <div class="field"><label>Deskripsi</label><input id="h-desc" type="text" placeholder="Contoh: Varian apa saja"></div>
-      <div class="field"><label>Biaya Poin</label><input id="h-poin" type="number" placeholder="10"></div>
-      <button class="btn btn-primary" onclick="tambahHadiah()">Tambah Hadiah</button>
-    </div>
-    <div class="card">
-      <div class="clabel">Akun Karyawan</div>
-      <div id="a-kary-list"></div>
-    </div>
-    <div class="hr"></div>
-    <button class="btn btn-secondary" onclick="confirmLogout('admin')">Keluar dari Admin</button>
-  </div>
+  <button class="btn btn-secondary" onclick="logoutAdmin()">Keluar</button>
 </div>
 
+<script src="../api-integration.js"></script>
+</body>
+</html>
+
 <script>
-// ============================================================
-// DATA
-// ============================================================
-var DB = {
-  settings: { nominalPerPoin: 25000, silverThreshold: 100, goldThreshold: 300, adminPin: '0000' },
-  hadiah: [
-    { id: 1, nama: 'Donat Gratis 1 pcs',    desc: 'Varian apa saja, 1 buah',      poin: 10 },
-    { id: 2, nama: 'Diskon Rp15.000',        desc: 'Min. pembelian Rp50.000',       poin: 20 },
-    { id: 3, nama: 'Box Donat 6 pcs Gratis', desc: '1 box pilihan, varian bebas',   poin: 50 }
-  ],
-  nextHadiahId: 4,
-  members: {
-    '081234567890': { nama: 'Sari Dewi',     pin: '1234', poin: 45, tx: [
-      { tgl: '2026-05-01', waktu: '10:30', nominal: 75000,  poin: 3,   tipe: 'tambah', kary: 'Ani Kasir' },
-      { tgl: '2026-04-20', waktu: '14:15', nominal: 100000, poin: 4,   tipe: 'tambah', kary: 'Bejo Kasir' },
-      { tgl: '2026-04-05', waktu: '11:20', nominal: 0,      poin: -4,  tipe: 'redeem', ket: 'Diskon Rp15.000', kary: 'Ani Kasir' }
-    ]},
-    '082345678901': { nama: 'Budi Santoso',  pin: '5678', poin: 120, tx: [
-      { tgl: '2026-06-01', waktu: '13:00', nominal: 150000, poin: 6,   tipe: 'tambah', kary: 'Ani Kasir' },
-      { tgl: '2026-05-20', waktu: '10:05', nominal: 0,      poin: -10, tipe: 'redeem', ket: 'Box Donat 6 pcs Gratis', kary: 'Bejo Kasir' }
-    ]},
-    '083456789012': { nama: 'Rina Wulandari', pin: '4321', poin: 8, tx: [
-      { tgl: '2026-06-05', waktu: '11:00', nominal: 75000,  poin: 3,   tipe: 'tambah', kary: 'Ani Kasir' }
-    ]}
-  },
-  karyawan: {
-    'kasir01': { nama: 'Ani Kasir',  pass: '1234' },
-    'kasir02': { nama: 'Bejo Kasir', pass: '1234' }
-  }
-};
-
-var curMember   = null;
-var curKaryawan = null;
-var pinBuf      = '';
-var kHisFilter  = 'all';
-var aHisFilter  = 'all';
-var kRange      = 'today';
-var aRange      = 'today';
-
-// ============================================================
-// LOCALSTORAGE PERSISTENCE
-// ============================================================
-function saveDB() {
-  localStorage.setItem('merindu_db', JSON.stringify(DB));
-}
-
-function loadDB() {
-  var saved = localStorage.getItem('merindu_db');
-  if (saved) {
-    try {
-      var loaded = JSON.parse(saved);
-      // Merge loaded data with defaults (keep settings intact)
-      DB.members = loaded.members || DB.members;
-      DB.hadiah = loaded.hadiah || DB.hadiah;
-      DB.karyawan = loaded.karyawan || DB.karyawan;
-      DB.nextHadiahId = loaded.nextHadiahId || DB.nextHadiahId;
-    } catch(e) {
-      console.error('Error loading DB:', e);
-    }
+// ===== UI FUNCTIONS =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  const page = document.getElementById('pg-' + name);
+  if (page) {
+    page.classList.add('show');
+    if (name === 'admin') renderAdmin();
   }
 }
 
-function saveSession() {
-  if (curMember) {
-    localStorage.setItem('merindu_session', JSON.stringify({ type: 'member', id: curMember }));
-  } else if (curKaryawan) {
-    localStorage.setItem('merindu_session', JSON.stringify({ type: 'karyawan', id: curKaryawan }));
-  } else {
-    localStorage.removeItem('merindu_session');
-  }
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('show');
 }
 
-function loadSession() {
-  var session = localStorage.getItem('merindu_session');
-  if (session) {
-    try {
-      var data = JSON.parse(session);
-      if (data.type === 'member' && DB.members[data.id]) {
-        curMember = data.id;
-        renderDashboard();
-        mTab('riwayat');
-        showPage('dashboard');
-      } else if (data.type === 'karyawan' && DB.karyawan[data.id]) {
-        curKaryawan = data.id;
-        renderKaryawan();
-        kTab('tx');
-        showPage('karyawan');
-      }
-    } catch(e) {
-      console.error('Error loading session:', e);
-    }
-  }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-// Load data on page start
-loadDB();
-loadSession();
+function showModal(title, body, ok) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-ok').onclick = async () => { if (ok) await ok(); closeModal(); };
+  document.getElementById('modal-overlay').classList.add('show');
+}
 
-// ============================================================
-// API INTEGRATION FUNCTIONS (OVERRIDE LOCAL STORAGE)
-// ============================================================
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
 
+// ===== MEMBER FUNCTIONS =====
 async function daftar() {
   const nama = document.getElementById('r-nama').value.trim();
   const hp = document.getElementById('r-hp').value.trim();
   const pin = document.getElementById('r-pin').value.trim();
-
-  if (!nama || !hp || !pin || pin.length !== 4) {
-    toast('Isi semua field dengan benar');
-    return;
-  }
-
+  if (!nama || !hp || !pin || pin.length !== 4) return toast('Isi semua field');
   try {
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ nama, hp, pin })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    toast('Registrasi berhasil!');
-    document.getElementById('r-nama').value = '';
-    document.getElementById('r-hp').value = '';
-    document.getElementById('r-pin').value = '';
-    document.getElementById('lm-hp').value = hp;
+    if (!res.ok) throw new Error((await res.json()).error);
+    toast('Registrasi berhasil');
     showPage('login-member');
   } catch (err) {
-    toast(err.message || 'Gagal registrasi');
+    toast(err.message);
   }
 }
 
 async function loginMember() {
   const hp = document.getElementById('lm-hp').value.trim();
   const pin = document.getElementById('lm-pin').value.trim();
-
-  if (!hp || !pin) {
-    toast('Masukkan nomor HP dan PIN');
-    return;
-  }
-
+  if (!hp || !pin) return toast('Isi semua field');
   try {
     const res = await fetch('/api/member/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ hp, pin })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    toast('Login berhasil!');
-    document.getElementById('lm-hp').value = '';
-    document.getElementById('lm-pin').value = '';
-    mTab('riwayat');
+    if (!res.ok) throw new Error((await res.json()).error);
+    toast('Login berhasil');
     showPage('dashboard');
     loadMemberProfile();
   } catch (err) {
-    toast(err.message || 'Login gagal');
+    toast(err.message);
   }
 }
 
 async function loadMemberProfile() {
   try {
-    const res = await fetch('/api/member/profile', {
-      credentials: 'include'
-    });
-    
-    if (!res.ok) {
-      showPage('landing');
-      return;
-    }
-
+    const res = await fetch('/api/member/profile');
+    if (!res.ok) return showPage('landing');
     const member = await res.json();
-
     document.getElementById('m-nama').textContent = member.nama;
     document.getElementById('m-poin').textContent = member.poin;
-    document.getElementById('m-id').textContent = 'ID: ' + member.id;
-
-    const tier = getTier(member.poin);
-    document.getElementById('m-tier').className = 'tier-badge ' + tier.cls;
-    document.getElementById('m-tier').textContent = tier.label;
-
-    const nextTier = tier.next;
-    const nextPoints = nextTier === 'Silver' ? 100 : 300;
-    document.getElementById('m-tier-nxt').textContent = nextTier + ' (' + nextPoints + ' poin)';
-    const progress = Math.min(100, (member.poin / nextPoints) * 100);
-    document.getElementById('m-prog').style.width = progress + '%';
-    document.getElementById('m-prog-msg').textContent = member.poin + ' / ' + nextPoints + ' poin';
-
     loadMemberTransactions();
+    loadHadiah();
   } catch (err) {
-    console.error('Error loading profile:', err);
     showPage('landing');
   }
 }
 
 async function loadMemberTransactions() {
   try {
-    const res = await fetch('/api/member/transactions', {
-      credentials: 'include'
-    });
-    const transactions = await res.json();
-
+    const res = await fetch('/api/member/transactions');
+    const txs = await res.json();
     const el = document.getElementById('m-tx-list');
-    if (!transactions.length) {
-      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Belum ada transaksi</div>';
-      return;
-    }
-
-    el.innerHTML = transactions.map(tx => {
-      const isRedeem = tx.tipe === 'redeem';
-      const icon = isRedeem ? '−' : '+';
-      const color = isRedeem ? 'minus' : '';
-      return `<div class="tx">
-        <div class="tx-info">
-          <div class="tx-nama">${isRedeem ? tx.ket : 'Belanja'}</div>
-          <div class="tx-date">${formatDate(tx.tgl)}${tx.waktu ? ' ' + tx.waktu : ''}</div>
+    if (!txs.length) return el.innerHTML = '<div style="text-align:center;color:var(--muted);">Belum ada transaksi</div>';
+    el.innerHTML = txs.map(t => `
+      <div class="tx">
+        <div>
+          <div class="tx-nama">${t.tipe === 'redeem' ? t.ket : 'Belanja'}</div>
+          <div class="tx-date">${new Date(t.tgl).toLocaleDateString('id-ID')}</div>
         </div>
-        <div class="tx-poin ${color}">${icon}${Math.abs(tx.poin)}</div>
-      </div>`;
-    }).join('');
+        <div class="tx-poin${t.tipe === 'redeem' ? ' minus' : ''}">${t.tipe === 'redeem' ? '−' : '+'}${Math.abs(t.poin)}</div>
+      </div>
+    `).join('');
   } catch (err) {
-    console.error('Error loading transactions:', err);
+    console.error(err);
   }
 }
 
-// ============================================================
-// KARYAWAN FUNCTIONS (API-BASED)
-// ============================================================
-
-async function cariMemberTx() {
-  const id = document.getElementById('tx-id').value.trim();
-  const infoEl = document.getElementById('tx-member-info');
-  const nfEl = document.getElementById('tx-not-found');
-
-  if (!id) {
-    toast('Masukkan nomor HP');
-    return;
-  }
-
+async function loadHadiah() {
   try {
-    const res = await fetch(`/api/karyawan/search-member/${id}`, {
-      credentials: 'include'
-    });
-    
-    if (!res.ok) {
-      infoEl.style.display = 'none';
-      nfEl.style.display = 'block';
-      return;
-    }
-
-    const member = await res.json();
-    const tier = getTier(member.poin);
-
-    infoEl.innerHTML = `
-      <div class="preview-row"><span>Nama</span><span class="val">${member.nama}</span></div>
-      <div class="preview-row"><span>Poin saat ini</span><span class="val">${member.poin} poin</span></div>
-      <div class="preview-row"><span>Tier</span><span class="val">${tier.label}</span></div>
-    `;
-    infoEl.style.display = 'block';
-    nfEl.style.display = 'none';
-    document.getElementById('tx-nominal').value = '';
+    const res = await fetch('/api/hadiah');
+    const hadiah = await res.json();
+    const el = document.getElementById('m-hadiah-list');
+    const colors = ['pink', 'caramel', 'dark'];
+    el.innerHTML = hadiah.map((h, i) => `
+      <div class="hadiah-card ${colors[i % colors.length]}">
+        <div class="hadiah-judul">${h.nama}</div>
+        <div class="hadiah-desc">${h.desc || ''}</div>
+        <div class="hadiah-footer">
+          <div class="hadiah-poin">${h.poin} poin</div>
+        </div>
+      </div>
+    `).join('');
   } catch (err) {
-    infoEl.style.display = 'none';
-    nfEl.style.display = 'block';
+    console.error(err);
   }
 }
 
-async function hitungLaluSimpan() {
-  const memberId = document.getElementById('tx-id').value.trim();
-  const tgl = document.getElementById('tx-tgl').value;
-  const nominal = parseInt(document.getElementById('tx-nominal').value) || 0;
-
-  if (!memberId || !tgl || nominal <= 0) {
-    toast('Isi semua field dengan benar');
-    return;
-  }
-
-  const poin = Math.floor(nominal / 25000);
-  const preview = document.getElementById('tx-poin-preview');
-
-  preview.innerHTML = `
-    <div class="preview-row"><span>Nominal</span><span class="val">${formatRp(nominal)}</span></div>
-    <div class="preview-row"><span>Poin didapat</span><span class="val">+${poin} poin</span></div>
-  `;
-  preview.style.display = 'block';
-
-  const bodyHTML = `
-    <div class="preview">
-      <div class="preview-row"><span>Member</span><span class="val">${document.getElementById('tx-id').value}</span></div>
-      <div class="preview-row"><span>Nominal</span><span class="val">${formatRp(nominal)}</span></div>
-      <div class="preview-row"><span>Poin didapat</span><span class="val">+${poin} poin</span></div>
-    </div>
-  `;
-
-  showModal('Simpan Transaksi?', bodyHTML, async () => {
-    try {
-      const res = await fetch('/api/karyawan/transaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ memberId, tgl, nominal, poin })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      toast(`+${poin} poin untuk member`);
-      document.getElementById('tx-id').value = '';
-      document.getElementById('tx-nominal').value = '';
-      document.getElementById('tx-member-info').style.display = 'none';
-      preview.style.display = 'none';
-    } catch (err) {
-      toast(err.message || 'Gagal menyimpan transaksi');
-    }
-  });
-}
-
-// ============================================================
-// UTILS
-// ============================================================
-function showPage(name) {
-  var pages = document.querySelectorAll('.page');
-  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('show');
-  document.getElementById('pg-' + name).classList.add('show');
-  window.scrollTo(0, 0);
-  // Clear semua login input saat pindah halaman — cegah cache antar user
-  var loginIds = ['lm-hp','lm-pin','lk-user','lk-pass','r-nama','r-hp','r-pin'];
-  for (var j = 0; j < loginIds.length; j++) {
-    var el = document.getElementById(loginIds[j]);
-    if (el) el.value = '';
-  }
-}
-
-function toggleMobileMenu() {
-  var menu = document.getElementById('mobile-menu');
-  menu.classList.toggle('show');
-}
-
-function togglePasswordVisibility(fieldId) {
-  var field = document.getElementById(fieldId);
-  var btn = event.target;
-  if (field.type === 'password') {
-    field.type = 'text';
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-  } else {
-    field.type = 'password';
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
-  }
-}
-
-// ============================================================
-// DATE RANGE HELPER
-// ============================================================
-function getDateRange(range, customDari, customSampai) {
-  var today  = todayStr();
-  var dari, sampai;
-  if (range === 'today') {
-    dari = today; sampai = today;
-  } else if (range === 'week') {
-    var now  = new Date();
-    var day  = now.getDay();
-    var diff = now.getDate() - day + (day === 0 ? -6 : 1);
-    var mon  = new Date(now.getFullYear(), now.getMonth(), diff);
-    dari     = mon.toISOString().split('T')[0];
-    sampai   = today;
-  } else if (range === 'month') {
-    dari = today.slice(0,7) + '-01'; sampai = today;
-  } else if (range === '6month') {
-    var d6 = new Date();
-    d6.setMonth(d6.getMonth() - 6);
-    dari = d6.toISOString().split('T')[0]; sampai = today;
-  } else if (range === 'all') {
-    dari = '2000-01-01'; sampai = '2099-12-31';
-  } else {
-    dari   = customDari   || '2000-01-01';
-    sampai = customSampai || '2099-12-31';
-  }
-  return { dari: dari, sampai: sampai };
-}
-
-function inRange(tgl, dari, sampai) {
-  return tgl >= dari && tgl <= sampai;
-}
-
-function setRangeBtns(containerId, active) {
-  var btns = document.getElementById(containerId).querySelectorAll('.range-btn');
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].classList.toggle('on', btns[i].getAttribute('onclick').indexOf("'" + active + "'") >= 0);
-  }
-}
-
-function setKRange(r) {
-  kRange = r;
-  setRangeBtns('k-range-btns', r);
-  document.getElementById('k-custom-range').style.display = r === 'custom' ? 'block' : 'none';
-  renderRiwayatKaryawan();
-}
-
-function setARange(r) {
-  aRange = r;
-  setRangeBtns('a-range-btns', r);
-  document.getElementById('a-custom-range').style.display = r === 'custom' ? 'block' : 'none';
-  renderAudit();
-}
-
-function toast(msg) {
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(function() { el.classList.remove('show'); }, 2800);
-}
-
-function getTier(p) {
-  if (p >= 300)   return { label: '🥇 Gold',   cls: 't-gold', next: 'Platinum' };
-  if (p >= 100) return { label: '🥈 Silver', cls: 't-silver', next: 'Gold' };
-  return { label: '🥉 Bronze', cls: 't-bronze' };
-}
-
-function fmtRp(n)  { return 'Rp' + Number(n).toLocaleString('id'); }
-function formatRp(n) { return 'Rp' + Number(n).toLocaleString('id'); }
-function fmtTgl(s) { return new Date(s).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); }
-function formatDate(s) { return new Date(s).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }); }
-function todayStr(){ return new Date().toISOString().split('T')[0]; }
-function nowTime() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); }
-
-// ============================================================
-// DAFTAR
-// ============================================================
-// LOGOUT CONFIRMATION
-// ============================================================
-function confirmLogout(type) {
-  showModal('Keluar dari akun?', '', function() {
-    if (type === 'member') logoutMember();
-    else if (type === 'karyawan') logoutKaryawan();
-    else if (type === 'admin') logoutAdmin();
-  }, 'Keluar', 'Tidak');
-}
-
-function logoutMember() {
-  curMember = null;
-  saveSession();
+async function logoutMember() {
+  await fetch('/api/member/logout', { method: 'POST' });
   showPage('landing');
 }
 
-// ============================================================
-// DASHBOARD MEMBER
-// ============================================================
-function mTab(t) {
-  document.getElementById('tab-riwayat').classList.toggle('on', t === 'riwayat');
-  document.getElementById('tab-hadiah').classList.toggle('on', t === 'hadiah');
-  document.getElementById('panel-riwayat').style.display = t === 'riwayat' ? 'block' : 'none';
-  document.getElementById('panel-hadiah').style.display  = t === 'hadiah'  ? 'block' : 'none';
+function mTab(tab) {
+  document.getElementById('panel-riwayat').style.display = tab === 'riwayat' ? 'block' : 'none';
+  document.getElementById('panel-hadiah').style.display = tab === 'hadiah' ? 'block' : 'none';
 }
 
-function renderDashboard() {
-  var m    = DB.members[curMember];
-  var tier = getTier(m.poin);
-
-  document.getElementById('m-nama').textContent = m.nama;
-  document.getElementById('m-poin').textContent = m.poin;
-  document.getElementById('m-id').textContent   = 'ID: ' + curMember;
-
-  var tb = document.getElementById('m-tier');
-  tb.textContent = tier.label;
-  tb.className = 'tier-badge ' + tier.cls;
-
-  // Progress
-  var s = DB.settings;
-  var pct, msg, cur, nxt;
-  if (m.poin < s.silverThreshold) {
-    pct = (m.poin / s.silverThreshold) * 100;
-    msg = (s.silverThreshold - m.poin) + ' poin lagi menuju Silver';
-    cur = 'Bronze'; nxt = 'Silver (' + s.silverThreshold + ')';
-  } else if (m.poin < s.goldThreshold) {
-    pct = ((m.poin - s.silverThreshold) / (s.goldThreshold - s.silverThreshold)) * 100;
-    msg = (s.goldThreshold - m.poin) + ' poin lagi menuju Gold';
-    cur = 'Silver'; nxt = 'Gold (' + s.goldThreshold + ')';
-  } else {
-    pct = 100; msg = 'Tier tertinggi 🎉'; cur = 'Gold'; nxt = 'Tertinggi';
-  }
-  document.getElementById('m-prog').style.width     = Math.min(pct, 100) + '%';
-  document.getElementById('m-prog-msg').textContent = msg;
-  document.getElementById('m-tier-cur').textContent = cur;
-  document.getElementById('m-tier-nxt').textContent = nxt;
-
-  // Riwayat
-  var el = document.getElementById('m-tx-list');
-  if (!m.tx.length) {
-    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Belum ada transaksi</div>';
-  } else {
-    var html = '';
-    var sorted = m.tx.slice().reverse();
-    for (var i = 0; i < sorted.length; i++) {
-      var tx = sorted[i];
-      var isR = tx.tipe === 'redeem';
-      html += '<div class="tx">' +
-        '<div class="tx-info">' +
-          '<div class="tx-nama">' + (isR ? (tx.ket || 'Penukaran Poin') : 'Pembelian') + '</div>' +
-          '<div class="tx-date">' + fmtTgl(tx.tgl) + (tx.waktu ? ' · ' + tx.waktu : '') + '</div>' +
-          (!isR ? '<div class="tx-nom">' + fmtRp(tx.nominal) + '</div>' : '') +
-        '</div>' +
-        '<div class="tx-poin' + (isR ? ' minus' : '') + '">' + (isR ? '−' : '+') + Math.abs(tx.poin) + '</div>' +
-      '</div>';
-    }
-    el.innerHTML = html;
-  }
-
-  // Hadiah (info saja)
-  var hEl = document.getElementById('m-hadiah-list');
-  var colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-  var hHtml  = '';
-  for (var j = 0; j < DB.hadiah.length; j++) {
-    var h = DB.hadiah[j];
-    hHtml += '<div class="hadiah-card ' + colors[j % colors.length] + '">' +
-      '<div class="hadiah-judul">' + h.nama + '</div>' +
-      '<div class="hadiah-desc">' + h.desc + '</div>' +
-      '<div class="hadiah-footer"><div class="hadiah-poin">' + h.poin + ' poin</div></div>' +
-    '</div>';
-  }
-  hEl.innerHTML = hHtml;
-}
-
-// ============================================================
-// KARYAWAN LOGIN / LOGOUT
-// ============================================================
-// KARYAWAN LOGIN / LOGOUT
-// ============================================================
+// ===== KARYAWAN FUNCTIONS =====
 async function loginKaryawan() {
   const username = document.getElementById('lk-user').value.trim();
   const password = document.getElementById('lk-pass').value.trim();
-
-  if (!username || !password) {
-    toast('Masukkan username dan password');
-    return;
-  }
-
+  if (!username || !password) return toast('Isi semua field');
   try {
     const res = await fetch('/api/karyawan/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ username, password })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-
-    toast('Login berhasil!');
-    document.getElementById('lk-user').value = '';
-    document.getElementById('lk-pass').value = '';
-    document.getElementById('k-label').textContent = 'Halo, ' + data.user.nama + '!';
-    document.getElementById('tx-tgl').value = todayStr();
-    resetFormTx();
-    resetFormRdm();
-    kTab('tx');
+    if (!res.ok) throw new Error((await res.json()).error);
+    toast('Login berhasil');
     showPage('karyawan');
+    document.getElementById('k-label').textContent = 'Halo, ' + (await res.json()).user.nama;
+    document.getElementById('tx-tgl').value = new Date().toISOString().split('T')[0];
   } catch (err) {
-    toast(err.message || 'Login gagal');
+    toast(err.message);
   }
 }
 
-function logoutKaryawan() {
-  fetch('/api/karyawan/logout', { method: 'POST', credentials: 'include' });
-  showPage('landing');
-}
-
-function kTab(t) {
-  document.getElementById('ktab-tx').classList.toggle('on',  t === 'tx');
-  document.getElementById('ktab-rdm').classList.toggle('on', t === 'rdm');
-  document.getElementById('ktab-his').classList.toggle('on', t === 'his');
-  document.getElementById('kpanel-tx').style.display  = t === 'tx'  ? 'block' : 'none';
-  document.getElementById('kpanel-rdm').style.display = t === 'rdm' ? 'block' : 'none';
-  document.getElementById('kpanel-his').style.display = t === 'his' ? 'block' : 'none';
-  if (t === 'his') {
-    kRange = 'today';
-    setRangeBtns('k-range-btns', 'today');
-    document.getElementById('k-custom-range').style.display = 'none';
-    renderRiwayatKaryawan();
-  }
-}
-
-function kHisTab(t) {
-  kHisFilter = t;
-  ['all','tambah','redeem'].forEach(function(x) {
-    document.getElementById('khtab-' + x).classList.toggle('on', x === t);
-  });
-  renderRiwayatKaryawan();
-}
-
-async function renderRiwayatKaryawan() {
-  const customDari = document.getElementById('k-tgl-dari')?.value || '';
-  const customSampai = document.getElementById('k-tgl-sampai')?.value || '';
-  const range = getDateRange(kRange, customDari, customSampai);
-  const memberFilter = document.getElementById('k-member-select')?.value || '';
-  const el = document.getElementById('k-his-list');
-  const sumEl = document.getElementById('k-his-summary');
-
+async function cariMemberTx() {
+  const id = document.getElementById('tx-id').value.trim();
+  if (!id) return toast('Masukkan ID');
   try {
-    // Populate member select
-    await loadKaryawanMembers();
-
-    // Fetch transactions from API
-    console.log('[RENDER RIWAYAT KARYAWAN] Fetching from /api/karyawan/transactions');
-    const res = await fetch('/api/karyawan/transactions', {
-      credentials: 'include'
-    });
-
-    console.log('[RENDER RIWAYAT KARYAWAN] Response status:', res.status);
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.error || 'Gagal memuat riwayat');
-    }
-
-    let rows = await res.json();
-    console.log('[RENDER RIWAYAT KARYAWAN] Got', rows.length, 'rows');
-
-    // Filter by member if specified
-    if (memberFilter) {
-      rows = rows.filter(r => r.memberId === memberFilter);
-    }
-
-    // Filter by date range
-    rows = rows.filter(r => inRange(r.tgl, range.dari, range.sampai));
-
-    // Filter by type
-    if (kHisFilter !== 'all') {
-      rows = rows.filter(r => r.tipe === kHisFilter);
-    }
-
-    // Sort by date descending
-    rows.sort((a, b) => (b.tgl + (b.waktu || '')).localeCompare(a.tgl + (a.waktu || '')));
-
-    // Display summary
-    if (rows.length) {
-      const jmlTambah = rows.filter(r => r.tipe === 'tambah').length;
-      const jmlRedeem = rows.filter(r => r.tipe === 'redeem').length;
-      const ttlPoin = rows.filter(r => r.tipe === 'tambah').reduce((s, r) => s + r.poin, 0);
-      sumEl.style.display = 'block';
-      sumEl.innerHTML =
-        '<div class="preview-row"><span>Transaksi masuk</span><span class="val">' + jmlTambah + '</span></div>' +
-        '<div class="preview-row"><span>Redeem diproses</span><span class="val">' + jmlRedeem + '</span></div>' +
-        '<div class="preview-row"><span>Total poin ditambah</span><span class="val">+' + ttlPoin + '</span></div>';
-    } else {
-      sumEl.style.display = 'none';
-    }
-
-    // Display transactions
-    if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
-      return;
-    }
-
-    el.innerHTML = rows.map(r => {
-      const isR = r.tipe === 'redeem';
-      const badge = isR
-        ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
-        : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
-      return '<div class="tx">' +
-        '<div class="tx-info">' +
-          '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
-          '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' ' + r.waktu : '') + '</div>' +
-          '<div class="tx-nom">' + (isR ? (r.ket || 'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
-        '</div>' +
-        '<div class="tx-poin' + (isR ? ' minus' : '') + '">' + (isR ? '−' : '+') + Math.abs(r.poin) + '</div>' +
-      '</div>';
-    }).join('');
+    const res = await fetch(`/api/karyawan/search-member/${id}`);
+    if (!res.ok) return document.getElementById('tx-member-info').style.display = 'none';
+    const member = await res.json();
+    document.getElementById('tx-member-info').innerHTML = `
+      <div class="preview-row"><span>Nama</span><span class="val">${member.nama}</span></div>
+      <div class="preview-row"><span>Poin</span><span class="val">${member.poin}</span></div>
+    `;
+    document.getElementById('tx-member-info').style.display = 'block';
   } catch (err) {
-    console.error('[RENDER RIWAYAT KARYAWAN] Error:', err);
-    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--pink);font-size:13px;">' + err.message + '</div>';
+    document.getElementById('tx-member-info').style.display = 'none';
   }
 }
 
-async function loadKaryawanMembers() {
-  try {
-    const res = await fetch('/api/karyawan/members', {
-      credentials: 'include'
-    });
-    if (!res.ok) throw new Error('Gagal memuat member');
-    const members = await res.json();
-    const select = document.getElementById('k-member-select');
-    if (select) {
-      const current = select.value;
-      select.innerHTML = '<option value="">— Semua Member —</option>';
-      members.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.id;
-        opt.textContent = m.nama;
-        select.appendChild(opt);
+async function simpanTx() {
+  const memberId = document.getElementById('tx-id').value.trim();
+  const tgl = document.getElementById('tx-tgl').value;
+  const nominal = parseInt(document.getElementById('tx-nominal').value) || 0;
+  if (!memberId || !tgl || nominal <= 0) return toast('Isi semua field');
+  const poin = Math.floor(nominal / 25000);
+  showModal('Simpan?', `Nominal: ${nominal}<br>Poin: +${poin}`, async () => {
+    try {
+      const res = await fetch('/api/karyawan/transaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId, tgl, nominal, poin })
       });
-      select.value = current;
+      if (!res.ok) throw new Error((await res.json()).error);
+      toast(`+${poin} poin`);
+      document.getElementById('tx-id').value = '';
+      document.getElementById('tx-nominal').value = '';
+      document.getElementById('tx-member-info').style.display = 'none';
+    } catch (err) {
+      toast(err.message);
     }
-  } catch (err) {
-    console.error('loadKaryawanMembers:', err);
-  }
-}
-
-// ============================================================
-// MODAL (ganti confirm() — mobile-safe)
-// ============================================================
-function showModal(title, bodyHTML, onOk, okLabel, cancelLabel) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').innerHTML = bodyHTML;
-  document.getElementById('modal-overlay').style.display = 'flex';
-  
-  var okBtn = document.getElementById('modal-ok');
-  var cancelBtn = document.getElementById('modal-cancel');
-  
-  okBtn.textContent = okLabel || 'Lanjutkan';
-  cancelBtn.textContent = cancelLabel || 'Batal';
-  
-  okBtn.onclick = function() {
-    closeModal();
-    onOk();
-  };
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').style.display = 'none';
-}
-
-// ============================================================
-// INPUT TRANSAKSI
-// ============================================================
-function resetFormTx() {
-  document.getElementById('tx-id').value      = '';
-  document.getElementById('tx-nominal').value = '';
-  document.getElementById('tx-member-info').style.display  = 'none';
-  document.getElementById('tx-not-found').style.display    = 'none';
-  document.getElementById('tx-poin-preview').style.display = 'none';
-}
-
-// ============================================================
-// INPUT TRANSAKSI
-// ============================================================
-function resetFormTx() {
-  document.getElementById('tx-id').value      = '';
-  document.getElementById('tx-tgl').value     = todayStr();
-  document.getElementById('tx-nominal').value = '';
-  document.getElementById('tx-member-info').style.display = 'none';
-  document.getElementById('tx-not-found').style.display   = 'none';
-  document.getElementById('tx-poin-preview').style.display = 'none';
-}
-
-// ============================================================
-// TUKAR POIN (KARYAWAN)
-// ============================================================
-function resetFormRdm() {
-  document.getElementById('rdm-id').value = '';
-  document.getElementById('rdm-member-info').style.display = 'none';
-  document.getElementById('rdm-not-found').style.display   = 'none';
-  document.getElementById('rdm-hadiah-list').style.display = 'none';
+  });
 }
 
 async function cariMemberRdm() {
   const id = document.getElementById('rdm-id').value.trim();
-  const infoEl = document.getElementById('rdm-member-info');
-  const nfEl = document.getElementById('rdm-not-found');
-  const hadEl = document.getElementById('rdm-hadiah-list');
-
-  if (!id) {
-    toast('Masukkan nomor HP');
-    return;
-  }
-
+  if (!id) return toast('Masukkan ID');
   try {
-    const res = await fetch(`/api/karyawan/search-member/${id}`, {
-      credentials: 'include'
-    });
-
-    if (!res.ok) {
-      infoEl.style.display = 'none';
-      nfEl.style.display = 'block';
-      hadEl.style.display = 'none';
-      return;
-    }
-
+    const res = await fetch(`/api/karyawan/search-member/${id}`);
+    if (!res.ok) return document.getElementById('rdm-member-info').style.display = 'none';
     const member = await res.json();
-    const tier = getTier(member.poin);
-
-    infoEl.innerHTML = `
+    document.getElementById('rdm-member-info').innerHTML = `
       <div class="preview-row"><span>Nama</span><span class="val">${member.nama}</span></div>
-      <div class="preview-row"><span>Poin saat ini</span><span class="val">${member.poin} poin</span></div>
-      <div class="preview-row"><span>Tier</span><span class="val">${tier.label}</span></div>
+      <div class="preview-row"><span>Poin</span><span class="val">${member.poin}</span></div>
     `;
-    infoEl.style.display = 'block';
-    nfEl.style.display = 'none';
-
-    await renderHadiahUntukRdm(id);
-    hadEl.style.display = 'block';
+    document.getElementById('rdm-member-info').style.display = 'block';
+    await renderHadiahForRedeem(id, member.poin);
   } catch (err) {
-    infoEl.style.display = 'none';
-    nfEl.style.display = 'block';
-    hadEl.style.display = 'none';
+    document.getElementById('rdm-member-info').style.display = 'none';
   }
 }
 
-async function renderHadiahUntukRdm(memberId) {
+async function renderHadiahForRedeem(memberId, memberPoin) {
   try {
-    const memberRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
-      credentials: 'include'
+    const res = await fetch('/api/hadiah');
+    const hadiah = await res.json();
+    const colors = ['pink', 'caramel', 'dark'];
+    let html = '';
+    hadiah.forEach((h, i) => {
+      const cukup = memberPoin >= h.poin;
+      html += `
+        <div class="hadiah-card ${colors[i % colors.length]}${cukup ? '' : ' disabled'}" onclick="${cukup ? `prosesRedeem(${h.id}, '${memberId}')` : ''}">
+          <div class="hadiah-judul">${h.nama}</div>
+          <div class="hadiah-desc">${h.desc || ''}</div>
+          <div class="hadiah-footer">
+            <div class="hadiah-poin">${h.poin}</div>
+            ${!cukup ? '<div class="hadiah-warn">Kurang poin</div>' : ''}
+          </div>
+        </div>
+      `;
     });
-
-    if (!memberRes.ok) {
-      toast('Member tidak ditemukan');
-      return;
-    }
-
-    const member = await memberRes.json();
-
-    const hadiahRes = await fetch('/api/hadiah', {
-      credentials: 'include'
-    });
-
-    if (!hadiahRes.ok) throw new Error('Gagal memuat hadiah');
-
-    const hadiahList = await hadiahRes.json();
-    const hadEl = document.getElementById('rdm-hadiah-list');
-    const colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-
-    let html = '<div class="clabel" style="margin-top:4px;margin-bottom:8px;">Pilih Hadiah</div>';
-
-    hadiahList.forEach((h, i) => {
-      const cukup = member.poin >= h.poin;
-      const color = colors[i % colors.length];
-
-      html += '<div class="hadiah-card ' + color + (cukup ? ' clickable' : ' disabled') + '" ' +
-        'data-id="' + h.id + '" data-member="' + memberId + '">' +
-        '<div class="hadiah-judul">' + h.nama + '</div>' +
-        '<div class="hadiah-desc">' + h.desc + '</div>' +
-        '<div class="hadiah-footer">' +
-          '<div class="hadiah-poin">' + h.poin + ' poin</div>' +
-          (!cukup ? '<div class="hadiah-warn">Poin tidak cukup</div>' : '') +
-        '</div>' +
-      '</div>';
-    });
-
-    hadEl.innerHTML = html;
-
-    const cards = hadEl.querySelectorAll('.hadiah-card.clickable');
-    cards.forEach(card => {
-      card.addEventListener('click', function() {
-        const hadiahId = parseInt(this.getAttribute('data-id'));
-        const mId = this.getAttribute('data-member');
-        prosesRedeem(hadiahId, mId);
-      });
-    });
+    document.getElementById('rdm-hadiah-list').innerHTML = html;
+    document.getElementById('rdm-hadiah-list').style.display = 'block';
   } catch (err) {
-    toast(err.message || 'Gagal memuat hadiah');
+    console.error(err);
   }
 }
 
 async function prosesRedeem(hadiahId, memberId) {
   try {
-    // Get member info
-    const memberRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
-      credentials: 'include'
-    });
-
-    if (!memberRes.ok) {
-      toast('Member tidak ditemukan');
-      return;
-    }
-
-    const member = await memberRes.json();
-
-    // Get hadiah list
-    const hadiahRes = await fetch('/api/hadiah', {
-      credentials: 'include'
-    });
-
-    if (!hadiahRes.ok) throw new Error('Gagal memuat hadiah');
-
-    const hadiahList = await hadiahRes.json();
-    const hadiah = hadiahList.find(h => h.id === hadiahId);
-
-    if (!hadiah) {
-      toast('Hadiah tidak ditemukan');
-      return;
-    }
-
-    if (member.poin < hadiah.poin) {
-      toast('Poin tidak cukup');
-      return;
-    }
-
-    const bodyHTML =
-      '<div class="alert alert-warn" style="margin-bottom:12px;">Pastikan struk fisik sudah dicek sebelum melanjutkan.</div>' +
-      '<div class="preview">' +
-      '<div class="preview-row"><span>Member</span><span class="val">' + member.nama + '</span></div>' +
-      '<div class="preview-row"><span>Hadiah</span><span class="val">' + hadiah.nama + '</span></div>' +
-      '<div class="preview-row"><span>Poin dipotong</span><span class="val">−' + hadiah.poin + ' poin</span></div>' +
-      '<div class="preview-row"><span>Sisa poin</span><span class="val">' + (member.poin - hadiah.poin) + ' poin</span></div>' +
-      '</div>';
-
-    showModal('Konfirmasi Penukaran Poin', bodyHTML, async () => {
+    const res = await fetch('/api/hadiah');
+    const hadiah = await res.json();
+    const h = hadiah.find(x => x.id === hadiahId);
+    if (!h) return toast('Hadiah tidak ditemukan');
+    showModal('Redeem?', `Hadiah: ${h.nama}<br>Poin: −${h.poin}`, async () => {
       try {
-        const redeemRes = await fetch('/api/karyawan/redeem', {
+        const res = await fetch('/api/karyawan/redeem', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
           body: JSON.stringify({ memberId, hadiahId })
         });
-
-        const data = await redeemRes.json();
-        if (!redeemRes.ok) throw new Error(data.error);
-
-        toast('Redeem berhasil: ' + hadiah.nama);
-
-        // Refresh member info
-        const refreshRes = await fetch(`/api/karyawan/search-member/${memberId}`, {
-          credentials: 'include'
-        });
-
-        if (refreshRes.ok) {
-          const refreshedMember = await refreshRes.json();
-          const infoEl = document.getElementById('rdm-member-info');
-          const tier = getTier(refreshedMember.poin);
-          infoEl.innerHTML =
-            '<div class="preview-row"><span>Nama</span><span class="val">' + refreshedMember.nama + '</span></div>' +
-            '<div class="preview-row"><span>Poin saat ini</span><span class="val">' + refreshedMember.poin + ' poin</span></div>' +
-            '<div class="preview-row"><span>Tier</span><span class="val">' + tier.label + '</span></div>';
-          await renderHadiahUntukRdm(memberId);
-        }
+        if (!res.ok) throw new Error((await res.json()).error);
+        toast('Redeem berhasil: ' + h.nama);
+        document.getElementById('rdm-id').value = '';
+        document.getElementById('rdm-member-info').style.display = 'none';
+        document.getElementById('rdm-hadiah-list').style.display = 'none';
       } catch (err) {
-        toast(err.message || 'Gagal memproses redeem');
+        toast(err.message);
       }
     });
   } catch (err) {
-    toast(err.message || 'Terjadi kesalahan');
+    console.error(err);
   }
 }
 
-// ============================================================
-// ADMIN PIN
-// ============================================================
-function updatePinDots() {
-  for (var i = 0; i < 4; i++) {
-    var d = document.getElementById('pd' + i);
-    if (i < pinBuf.length) d.classList.add('on');
-    else d.classList.remove('on');
+function kTab(tab) {
+  document.getElementById('kpanel-tx').style.display = tab === 'tx' ? 'block' : 'none';
+  document.getElementById('kpanel-rdm').style.display = tab === 'rdm' ? 'block' : 'none';
+  document.getElementById('kpanel-his').style.display = tab === 'his' ? 'block' : 'none';
+  if (tab === 'his') setKRange('today');
+}
+
+window.kRange = 'today';
+function setKRange(range) {
+  window.kRange = range;
+  document.querySelectorAll('#k-range-btns .range-btn').forEach((btn, i) => {
+    const ranges = ['today', 'week', 'month', 'all'];
+    btn.classList.toggle('on', ranges[i] === range);
+  });
+  renderRiwayatKaryawan();
+}
+
+async function renderRiwayatKaryawan() {
+  try {
+    const res = await fetch('/api/karyawan/transactions?t=' + Date.now());
+    const txs = await res.json();
+    const range = getDateRange(window.kRange);
+    let filtered = txs.filter(t => {
+      const d = new Date(t.tgl + 'T00:00:00');
+      return d >= range.from && d <= range.to;
+    });
+    const el = document.getElementById('k-his-list');
+    if (!filtered.length) return el.innerHTML = '<div style="text-align:center;color:var(--muted);">Tidak ada transaksi</div>';
+    el.innerHTML = filtered.map(t => `
+      <div class="tx">
+        <div>
+          <div class="tx-nama">${t.memberNama}</div>
+          <div class="tx-date">${new Date(t.tgl).toLocaleDateString('id-ID')}</div>
+        </div>
+        <div class="tx-poin${t.tipe === 'redeem' ? ' minus' : ''}">${t.tipe === 'redeem' ? '−' : '+'}${Math.abs(t.poin)}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error(err);
   }
 }
 
-function pinTap(k) {
-  if (k === 'del') {
-    pinBuf = pinBuf.slice(0, -1);
-    updatePinDots();
-    return;
-  }
-  if (k === 'ok') {
-    if (pinBuf === DB.settings.adminPin) {
-      renderAdmin();
-      showPage('admin');
-    } else {
-      toast('PIN salah');
-      pinBuf = '';
-      updatePinDots();
-    }
-    return;
-  }
-  if (pinBuf.length >= 4) return;
-  pinBuf += k;
-  updatePinDots();
-  if (pinBuf.length === 4) {
-    setTimeout(function() { pinTap('ok'); }, 200);
-  }
+function getDateRange(range) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const to = new Date(today);
+  to.setHours(23, 59, 59, 999);
+  let from = new Date(today);
+  if (range === 'week') from.setDate(from.getDate() - 7);
+  else if (range === 'month') from.setMonth(from.getMonth() - 1);
+  else if (range === 'all') from = new Date('2020-01-01');
+  return { from, to };
 }
 
-function logoutAdmin() {
-  pinBuf = '';
+async function logoutKaryawan() {
+  await fetch('/api/karyawan/logout', { method: 'POST' });
   showPage('landing');
 }
 
-// ============================================================
-// ADMIN TABS
-// ============================================================
-function aTab(t) {
-  var tabs = ['r', 'm', 'a', 's'];
-  for (var i = 0; i < tabs.length; i++) {
-    document.getElementById('atab-' + tabs[i]).classList.toggle('on', tabs[i] === t);
-    document.getElementById('apanel-' + tabs[i]).style.display = tabs[i] === t ? 'block' : 'none';
-  }
-  if (t === 'm') renderMemberList();
-  if (t === 'a') {
-    aRange = 'today';
-    aHisFilter = 'all';
-    document.getElementById('a-custom-range').style.display = 'none';
-    setRangeBtns('a-range-btns', 'today');
-    ['all','tambah','redeem'].forEach(function(x) {
-      document.getElementById('atab-' + x).classList.toggle('on', x === 'all');
+// ===== ADMIN FUNCTIONS =====
+window.pinBuf = '';
+function pinTap(k) {
+  if (k === 'del') window.pinBuf = window.pinBuf.slice(0, -1);
+  else if (k === 'ok') {
+    fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin: window.pinBuf })
+    }).then(r => r.json()).then(d => {
+      if (d.success) { window.pinBuf = ''; showPage('admin'); }
+      else toast('PIN salah');
     });
-    var sel = document.getElementById('a-member-select');
-    if (sel) sel.value = '';
-    renderAudit();
+    return;
+  } else {
+    if (window.pinBuf.length < 4) window.pinBuf += k;
   }
-  if (t === 's') renderSetting();
+  updatePinDots();
 }
 
-function aHisTab(t) {
-  aHisFilter = t;
-  ['all','tambah','redeem'].forEach(function(x) {
-    document.getElementById('atab-' + x).classList.toggle('on', x === t);
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('pd' + i);
+    el.style.background = i < window.pinBuf.length ? 'var(--caramel)' : '';
+  }
+}
+
+async function renderAdmin() {
+  try {
+    const res = await fetch('/api/admin/dashboard');
+    const data = await res.json();
+    document.getElementById('s-mem').textContent = data.totalMembers;
+    document.getElementById('s-tx').textContent = data.totalTransactions;
+    document.getElementById('s-rdm').textContent = data.totalRedeem;
+    document.getElementById('s-omset').textContent = data.omset > 1000000 ? (data.omset / 1000000).toFixed(1) + 'jt' : Math.floor(data.omset / 1000) + 'rb';
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function aTab(tab) {
+  document.getElementById('apanel-r').style.display = tab === 'r' ? 'block' : 'none';
+  document.getElementById('apanel-m').style.display = tab === 'm' ? 'block' : 'none';
+  document.getElementById('apanel-a').style.display = tab === 'a' ? 'block' : 'none';
+  if (tab === 'm') renderMemberList();
+  if (tab === 'a') setARange('today');
+}
+
+async function renderMemberList() {
+  try {
+    const res = await fetch('/api/admin/members?t=' + Date.now());
+    const members = await res.json();
+    const el = document.getElementById('a-member-list');
+    if (!members.length) return el.innerHTML = '<div style="text-align:center;color:var(--muted);">Tidak ada member</div>';
+    el.innerHTML = members.map(m => `
+      <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+        <div>
+          <div style="font-weight:600;">${m.nama}</div>
+          <div style="font-size:11px;color:var(--muted);">ID: ${m.id} | Poin: ${m.poin}</div>
+        </div>
+        <button class="btn-hapus" onclick="hapusMemeber('${m.id}', '${m.nama}')">Hapus</button>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function hapusMemeber(id, nama) {
+  showModal('Hapus?', `Member: ${nama}`, async () => {
+    try {
+      const res = await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error((await res.json()).error);
+      toast('Dihapus');
+      renderMemberList();
+    } catch (err) {
+      toast(err.message);
+    }
+  });
+}
+
+window.aRange = 'today';
+function setARange(range) {
+  window.aRange = range;
+  document.querySelectorAll('#a-range-btns .range-btn').forEach((btn, i) => {
+    const ranges = ['today', 'week', 'month', 'all'];
+    btn.classList.toggle('on', ranges[i] === range);
   });
   renderAudit();
 }
 
-// ============================================================
-// ADMIN RENDER
-// ============================================================
-function renderAdmin() {
-  var mems    = Object.values(DB.members);
-  var txAll   = [];
-  for (var i = 0; i < mems.length; i++) txAll = txAll.concat(mems[i].tx);
-  var tambah  = txAll.filter(function(t) { return t.tipe === 'tambah'; });
-  var redeems = txAll.filter(function(t) { return t.tipe === 'redeem'; });
-  var omset   = tambah.reduce(function(s, t) { return s + t.nominal; }, 0);
-  var pBeredar = mems.reduce(function(s, m) { return s + m.poin; }, 0);
-  var pKeluar  = redeems.reduce(function(s, t) { return s + Math.abs(t.poin); }, 0);
-
-  document.getElementById('s-mem').textContent         = mems.length;
-  document.getElementById('s-tx').textContent          = tambah.length;
-  document.getElementById('s-rdm').textContent         = redeems.length;
-  document.getElementById('s-poin-beredar').textContent = pBeredar;
-  document.getElementById('s-poin-keluar').textContent  = pKeluar;
-  document.getElementById('s-omset').textContent = omset >= 1000000
-    ? (omset / 1000000).toFixed(1) + 'jt'
-    : Math.floor(omset / 1000) + 'rb';
-
-  // Tier
-  var bz = 0, sv = 0, gd = 0;
-  mems.forEach(function(m) {
-    var l = getTier(m.poin).label;
-    if (l.indexOf('Gold') >= 0) gd++;
-    else if (l.indexOf('Silver') >= 0) sv++;
-    else bz++;
-  });
-  document.getElementById('r-bz').textContent = bz + ' member';
-  document.getElementById('r-sv').textContent = sv + ' member';
-  document.getElementById('r-gd').textContent = gd + ' member';
-
-  // Hadiah populer
-  var rc = {};
-  redeems.forEach(function(t) { rc[t.ket] = (rc[t.ket] || 0) + 1; });
-  var popEl = document.getElementById('r-popular');
-  if (!Object.keys(rc).length) {
-    popEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">Belum ada data</div>';
-  } else {
-    var sorted = Object.entries(rc).sort(function(a, b) { return b[1] - a[1]; });
-    popEl.innerHTML = sorted.map(function(e) {
-      return '<div class="rrow"><span>' + e[0] + '</span><span class="rval pink">' + e[1] + 'x</span></div>';
-    }).join('');
-  }
-
-  // Aktivitas karyawan
-  var ka = {};
-  txAll.forEach(function(t) {
-    if (!t.kary) return;
-    if (!ka[t.kary]) ka[t.kary] = { tx: 0, rdm: 0 };
-    if (t.tipe === 'tambah') ka[t.kary].tx++;
-    if (t.tipe === 'redeem') ka[t.kary].rdm++;
-  });
-  var kEl = document.getElementById('r-karyawan');
-  if (!Object.keys(ka).length) {
-    kEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">Belum ada data</div>';
-  } else {
-    kEl.innerHTML = Object.entries(ka).map(function(e) {
-      return '<div class="rrow"><div>' +
-        '<div style="font-size:13px;font-weight:500;">' + e[0] + '</div>' +
-        '<div style="font-size:11px;color:var(--muted);">' + e[1].tx + ' transaksi · ' + e[1].rdm + ' redeem</div>' +
-      '</div></div>';
-    }).join('');
-  }
-}
-
-function renderMemberList() {
-  var q   = (document.getElementById('a-cari').value || '').toLowerCase();
-  var el  = document.getElementById('a-member-list');
-  var ent = Object.entries(DB.members).filter(function(e) {
-    return e[1].nama.toLowerCase().indexOf(q) >= 0 || e[0].indexOf(q) >= 0;
-  });
-  if (!ent.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Tidak ditemukan</div>'; return; }
-  el.innerHTML = ent.map(function(e) {
-    var id = e[0]; var m = e[1];
-    var tier = getTier(m.poin);
-    var txc  = m.tx.filter(function(t) { return t.tipe === 'tambah'; }).length;
-    return '<div class="tx">' +
-      '<div class="tx-info">' +
-        '<div class="tx-nama">' + m.nama + '</div>' +
-        '<div class="tx-date">' + id + '</div>' +
-        '<div style="font-size:11px;color:var(--muted);">' + txc + ' transaksi</div>' +
-        '<span class="tier-badge ' + tier.cls + '" style="margin-top:4px;">' + tier.label + '</span>' +
-      '</div>' +
-      '<div style="text-align:right;">' +
-        '<div class="tx-poin">' + m.poin + '</div>' +
-        '<div style="font-size:10px;color:var(--muted);">poin</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
 async function renderAudit() {
-  const customDari = document.getElementById('a-tgl-dari')?.value || '';
-  const customSampai = document.getElementById('a-tgl-sampai')?.value || '';
-  const range = getDateRange(aRange, customDari, customSampai);
-  const memberFilter = document.getElementById('a-member-select')?.value || '';
-  const el = document.getElementById('a-audit-list');
-  const sumEl = document.getElementById('a-audit-summary');
-
   try {
-    // Load members for dropdown
-    const membersRes = await fetch('/api/admin/members', {
-      credentials: 'include'
+    const res = await fetch('/api/admin/transactions?t=' + Date.now());
+    const txs = await res.json();
+    const range = getDateRange(window.aRange);
+    let filtered = txs.filter(t => {
+      const d = new Date(t.tgl + 'T00:00:00');
+      return d >= range.from && d <= range.to;
     });
-    if (membersRes.ok) {
-      const members = await membersRes.json();
-      const select = document.getElementById('a-member-select');
-      if (select) {
-        const current = select.value;
-        select.innerHTML = '<option value="">— Semua Member —</option>';
-        members.forEach(m => {
-          const opt = document.createElement('option');
-          opt.value = m.id;
-          opt.textContent = m.nama;
-          select.appendChild(opt);
-        });
-        select.value = current;
+    const el = document.getElementById('a-his-list');
+    if (!filtered.length) return el.innerHTML = '<div style="text-align:center;color:var(--muted);">Tidak ada transaksi</div>';
+    el.innerHTML = filtered.map(t => `
+      <div class="tx">
+        <div>
+          <div class="tx-nama">${t.memberNama}</div>
+          <div class="tx-date">${new Date(t.tgl).toLocaleDateString('id-ID')}</div>
+        </div>
+        <div class="tx-poin${t.tipe === 'redeem' ? ' minus' : ''}">${t.tipe === 'redeem' ? '−' : '+'}${Math.abs(t.poin)}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function logoutAdmin() {
+  await fetch('/api/admin/logout', { method: 'POST' });
+  window.pinBuf = '';
+  showPage('landing');
+}
+
+// Check session on load
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/api/session');
+    const session = await res.json();
+    if (session.logged) {
+      if (session.userType === 'member') {
+        showPage('dashboard');
+        loadMemberProfile();
+      } else if (session.userType === 'karyawan') {
+        showPage('karyawan');
+        document.getElementById('k-label').textContent = 'Halo, ' + session.userName;
+      } else if (session.userType === 'admin') {
+        showPage('admin');
       }
     }
-
-    // Fetch all transactions
-    const txRes = await fetch('/api/admin/transactions', {
-      credentials: 'include'
-    });
-    if (!txRes.ok) throw new Error('Gagal memuat transaksi');
-
-    let rows = await txRes.json();
-
-    // Filter by member if specified
-    if (memberFilter) {
-      rows = rows.filter(r => r.memberId === memberFilter);
-    }
-
-    // Filter by date range
-    rows = rows.filter(r => inRange(r.tgl, range.dari, range.sampai));
-
-    // Filter by type
-    if (aHisFilter !== 'all') {
-      rows = rows.filter(r => r.tipe === aHisFilter);
-    }
-
-    // Sort by date descending
-    rows.sort((a, b) => (b.tgl + (b.waktu || '')).localeCompare(a.tgl + (a.waktu || '')));
-
-    // Display summary
-    if (rows.length) {
-      const jmlTambah = rows.filter(r => r.tipe === 'tambah').length;
-      const jmlRedeem = rows.filter(r => r.tipe === 'redeem').length;
-      const ttlMasuk = rows.filter(r => r.tipe === 'tambah').reduce((s, r) => s + r.poin, 0);
-      const ttlKeluar = rows.filter(r => r.tipe === 'redeem').reduce((s, r) => s + Math.abs(r.poin), 0);
-      sumEl.style.display = 'block';
-      sumEl.innerHTML =
-        '<div class="preview-row"><span>Tambah poin</span><span class="val">' + jmlTambah + ' tx (+' + ttlMasuk + ' poin)</span></div>' +
-        '<div class="preview-row"><span>Redeem</span><span class="val">' + jmlRedeem + ' tx (−' + ttlKeluar + ' poin)</span></div>';
-    } else {
-      sumEl.style.display = 'none';
-    }
-
-    // Display transactions
-    if (!rows.length) {
-      el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:13px;">Tidak ada transaksi pada periode ini</div>';
-      return;
-    }
-
-    el.innerHTML = rows.map(r => {
-      const isR = r.tipe === 'redeem';
-      const badge = isR
-        ? '<span style="font-size:10px;background:#fdecea;color:#c0392b;padding:1px 7px;border-radius:10px;margin-left:5px;">Redeem</span>'
-        : '<span style="font-size:10px;background:#e8f5ee;color:#2d7a4f;padding:1px 7px;border-radius:10px;margin-left:5px;">+Poin</span>';
-      return '<div class="tx">' +
-        '<div class="tx-info">' +
-          '<div class="tx-nama">' + r.memberNama + badge + '</div>' +
-          '<div class="tx-date">' + fmtTgl(r.tgl) + (r.waktu ? ' · ' + r.waktu : '') + '</div>' +
-          '<div class="tx-nom">' + (isR ? (r.ket || 'Penukaran Poin') : fmtRp(r.nominal)) + '</div>' +
-          '<div style="font-size:10px;color:var(--muted);">🏷️ ' + (r.kary || '—') + '</div>' +
-        '</div>' +
-        '<div class="tx-poin' + (isR ? ' minus' : '') + '">' + (isR ? '−' : '+') + Math.abs(r.poin) + '</div>' +
-      '</div>';
-    }).join('');
-  } catch (err) {
-    el.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--pink);font-size:13px;">' + err.message + '</div>';
-  }
-}
-
-function renderSetting() {
-  document.getElementById('set-n').value  = DB.settings.nominalPerPoin;
-  document.getElementById('set-sv').value = DB.settings.silverThreshold;
-  document.getElementById('set-gd').value = DB.settings.goldThreshold;
-
-  // Hadiah list
-  var el = document.getElementById('hadiah-admin-list');
-  if (!DB.hadiah.length) {
-    el.innerHTML = '<div style="color:var(--muted);font-size:13px;">Belum ada hadiah</div>';
-  } else {
-    el.innerHTML = DB.hadiah.map(function(h) {
-      return '<div class="hadiah-item">' +
-        '<div class="hadiah-item-info">' +
-          '<div class="hadiah-item-nama">' + h.nama + '</div>' +
-          '<div class="hadiah-item-desc">' + h.desc + '</div>' +
-          '<div class="hadiah-item-poin">' + h.poin + ' poin</div>' +
-        '</div>' +
-        '<div class="hadiah-item-btns">' +
-          '<button class="btn-edit" data-id="' + h.id + '" onclick="editHadiah(this)">Edit</button>' +
-          '<button class="btn-hapus" data-id="' + h.id + '" onclick="hapusHadiah(this)">Hapus</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  // Karyawan
-  var kEl = document.getElementById('a-kary-list');
-  kEl.innerHTML = Object.entries(DB.karyawan).map(function(e) {
-    return '<div class="rrow"><div>' +
-      '<div style="font-size:13px;font-weight:500;">' + e[1].nama + '</div>' +
-      '<div style="font-size:11px;color:var(--muted);">@' + e[0] + '</div>' +
-    '</div><div style="font-size:11px;color:var(--muted);">Aktif</div></div>';
-  }).join('');
-}
-
-// ============================================================
-// HADIAH MANAGEMENT — pakai modal, bukan prompt/confirm
-// ============================================================
-function tambahHadiah() {
-  var nama = document.getElementById('h-nama').value.trim();
-  var desc = document.getElementById('h-desc').value.trim();
-  var poin = parseInt(document.getElementById('h-poin').value) || 0;
-  if (!nama)     { toast('Isi nama hadiah'); return; }
-  if (poin <= 0) { toast('Isi biaya poin'); return; }
-  DB.hadiah.push({ id: DB.nextHadiahId++, nama: nama, desc: desc, poin: poin });
-  document.getElementById('h-nama').value = '';
-  document.getElementById('h-desc').value = '';
-  document.getElementById('h-poin').value = '';
-  toast('Hadiah ditambahkan');
-  renderSetting();
-}
-
-function editHadiah(btn) {
-  var id = parseInt(btn.getAttribute('data-id'));
-  var h  = null;
-  for (var i = 0; i < DB.hadiah.length; i++) {
-    if (DB.hadiah[i].id === id) { h = DB.hadiah[i]; break; }
-  }
-  if (!h) return;
-
-  var bodyHTML =
-    '<div class="field"><label>Nama Hadiah</label>' +
-      '<input id="edit-h-nama" type="text" value="' + h.nama + '" autocomplete="off"></div>' +
-    '<div class="field"><label>Deskripsi</label>' +
-      '<input id="edit-h-desc" type="text" value="' + h.desc + '" autocomplete="off"></div>' +
-    '<div class="field"><label>Biaya Poin</label>' +
-      '<input id="edit-h-poin" type="number" value="' + h.poin + '"></div>';
-
-  showModal('Edit Hadiah', bodyHTML, function() {
-    var n = document.getElementById('edit-h-nama').value.trim();
-    var d = document.getElementById('edit-h-desc').value.trim();
-    var p = parseInt(document.getElementById('edit-h-poin').value) || 0;
-    if (!n)    { toast('Nama tidak boleh kosong'); return; }
-    if (p <= 0){ toast('Poin harus lebih dari 0'); return; }
-    h.nama = n; h.desc = d; h.poin = p;
-    toast('Hadiah diperbarui');
-    renderSetting();
-  });
-}
-
-function hapusHadiah(btn) {
-  var id = parseInt(btn.getAttribute('data-id'));
-  var h  = null;
-  for (var i = 0; i < DB.hadiah.length; i++) {
-    if (DB.hadiah[i].id === id) { h = DB.hadiah[i]; break; }
-  }
-  if (!h) return;
-
-  var bodyHTML =
-    '<div class="preview">' +
-    '<div class="preview-row"><span>Nama</span><span class="val">' + h.nama + '</span></div>' +
-    '<div class="preview-row"><span>Biaya</span><span class="val">' + h.poin + ' poin</span></div>' +
-    '</div>' +
-    '<div class="alert alert-warn">Hadiah yang dihapus tidak bisa dikembalikan.</div>';
-
-  showModal('Hapus Hadiah?', bodyHTML, function() {
-    DB.hadiah = DB.hadiah.filter(function(x) { return x.id !== id; });
-    toast('Hadiah dihapus');
-    renderSetting();
-  });
-}
-
-function simpanSetting() {
-  DB.settings.nominalPerPoin  = parseInt(document.getElementById('set-n').value)  || 25000;
-  DB.settings.silverThreshold = parseInt(document.getElementById('set-sv').value) || 100;
-  DB.settings.goldThreshold   = parseInt(document.getElementById('set-gd').value) || 300;
-  document.getElementById('tx-hint').textContent = fmtRp(DB.settings.nominalPerPoin) + ' = 1 poin';
-  toast('Setting disimpan');
-  renderAdmin();
-}
-
-// ============================================================
-// HELPER — build member select dropdown
-// ============================================================
-function buildMemberSelect(selectId) {
-  var el  = document.getElementById(selectId);
-  if (!el) return;
-  var val = el.value; // simpan pilihan saat ini
-  var html = '<option value="">— Semua Member —</option>';
-  Object.entries(DB.members).forEach(function(e) {
-    html += '<option value="' + e[0] + '">' + e[1].nama + ' (' + e[0] + ')</option>';
-  });
-  el.innerHTML = html;
-  el.value = val; // kembalikan pilihan
-}
+  } catch (err) {}
+});
 </script>
-</body>
-</html>
