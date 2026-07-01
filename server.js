@@ -45,7 +45,25 @@ app.use(session({
   }
 }));
 
-// ===== Initialize Database =====
+// ===== HELPER FUNCTION =====
+function getWIBTime() {
+  const now = new Date();
+  // Convert to WIB (UTC+7)
+  const wibTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+  
+  const year = wibTime.getFullYear();
+  const month = String(wibTime.getMonth() + 1).padStart(2, '0');
+  const date = String(wibTime.getDate()).padStart(2, '0');
+  const hours = String(wibTime.getHours()).padStart(2, '0');
+  const minutes = String(wibTime.getMinutes()).padStart(2, '0');
+  
+  return {
+    tgl: `${year}-${month}-${date}`,
+    waktu: `${hours}:${minutes}`
+  };
+}
+
+// ===== INITIALIZE DATABASE =====
 async function initDB() {
   try {
     // Create tables
@@ -322,13 +340,12 @@ app.post('/api/karyawan/transaction', async (req, res) => {
   try {
     await pool.query('UPDATE members SET poin = poin + $1 WHERE id = $2', [poin, memberId]);
 
-    const now = new Date();
-    const waktu = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const wibTime = getWIBTime();
     
     await pool.query(`
       INSERT INTO transactions (memberId, tgl, waktu, nominal, poin, tipe, kary)
       VALUES ($1, $2, $3, $4, $5, 'tambah', $6)
-    `, [memberId, tgl, waktu, nominal, poin, req.session.userName]);
+    `, [memberId, wibTime.tgl, wibTime.waktu, nominal, poin, req.session.userName]);
 
     res.json({ success: true, message: 'Transaksi disimpan' });
   } catch (err) {
@@ -364,14 +381,12 @@ app.post('/api/karyawan/redeem', async (req, res) => {
 
     await pool.query('UPDATE members SET poin = poin - $1 WHERE id = $2', [hadiah.poin, memberId]);
 
-    const now = new Date();
-    const waktu = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const tgl = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const wibTime = getWIBTime();
     
     await pool.query(`
       INSERT INTO transactions (memberId, tgl, waktu, poin, tipe, ket, kary)
       VALUES ($1, $2, $3, $4, 'redeem', $5, $6)
-    `, [memberId, tgl, waktu, -hadiah.poin, hadiah.nama, req.session.userName]);
+    `, [memberId, wibTime.tgl, wibTime.waktu, -hadiah.poin, hadiah.nama, req.session.userName]);
 
     res.json({ success: true, message: 'Redeem berhasil' });
   } catch (err) {
