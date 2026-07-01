@@ -1039,12 +1039,11 @@ function renderDashboard() {
   // Hadiah (info saja)
   var hEl = document.getElementById('m-hadiah-list');
   var colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-  var icons  = ['🍩', '💸', '🎁', '⭐', '🎀'];
   var hHtml  = '';
   for (var j = 0; j < DB.hadiah.length; j++) {
     var h = DB.hadiah[j];
     hHtml += '<div class="hadiah-card ' + colors[j % colors.length] + '">' +
-      '<div class="hadiah-judul">' + icons[j % icons.length] + ' ' + h.nama + '</div>' +
+      '<div class="hadiah-judul">' + h.nama + '</div>' +
       '<div class="hadiah-desc">' + h.desc + '</div>' +
       '<div class="hadiah-footer"><div class="hadiah-poin">' + h.poin + ' poin</div></div>' +
     '</div>';
@@ -1348,18 +1347,16 @@ async function renderHadiahUntukRdm(memberId) {
     const hadiahList = await hadiahRes.json();
     const hadEl = document.getElementById('rdm-hadiah-list');
     const colors = ['pink', 'caramel', 'dark', 'caramel', 'pink'];
-    const icons = ['🍩', '💸', '🎁', '⭐', '🎀'];
 
     let html = '<div class="clabel" style="margin-top:4px;margin-bottom:8px;">Pilih Hadiah</div>';
 
     hadiahList.forEach((h, i) => {
       const cukup = member.poin >= h.poin;
       const color = colors[i % colors.length];
-      const icon = icons[i % icons.length];
 
       html += '<div class="hadiah-card ' + color + (cukup ? ' clickable' : ' disabled') + '" ' +
         'data-id="' + h.id + '" data-member="' + memberId + '">' +
-        '<div class="hadiah-judul">' + icon + ' ' + h.nama + '</div>' +
+        '<div class="hadiah-judul">' + h.nama + '</div>' +
         '<div class="hadiah-desc">' + h.desc + '</div>' +
         '<div class="hadiah-footer">' +
           '<div class="hadiah-poin">' + h.poin + ' poin</div>' +
