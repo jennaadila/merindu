@@ -107,10 +107,13 @@ async function initDB() {
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['nominalPerPoin', '25000']);
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['silverThreshold', '100']);
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['goldThreshold', '300']);
-      await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['adminPin', '1234']);
+      await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['adminPin', '8181']);
+    } else {
+      // Update admin PIN to 8181 if it exists
+      await pool.query('UPDATE settings SET value = $1 WHERE key = $2', ['8181', 'adminPin']);
     }
 
-    // Initialize default hadiah
+    // Initialize default hadiah (without emojis)
     const hadiahCount = await pool.query('SELECT COUNT(*) FROM hadiah');
     if (parseInt(hadiahCount.rows[0].count) === 0) {
       await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Donat Gratis', 'Tukar dengan 1 donat gratis pilihan', 20]);
@@ -395,13 +398,31 @@ app.get('/api/karyawan/transactions', async (req, res) => {
   }
 
   try {
+    // Show all transactions, not just ones by this karyawan
     const result = await pool.query(`
       SELECT t.*, m.nama as memberNama
       FROM transactions t
       JOIN members m ON t.memberId = m.id
-      WHERE t.kary = $1
       ORDER BY t.tgl DESC, t.waktu DESC
-    `, [req.session.userName]);
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Terjadi kesalahan' });
+  }
+});
+
+app.get('/api/admin/transactions', async (req, res) => {
+  if (!req.session.userId || req.session.userType !== 'admin') {
+    return res.status(401).json({ error: 'Tidak login' });
+  }
+
+  try {
+    const result = await pool.query(`
+      SELECT t.*, m.nama as memberNama
+      FROM transactions t
+      JOIN members m ON t.memberId = m.id
+      ORDER BY t.tgl DESC, t.waktu DESC
+    `);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: 'Terjadi kesalahan' });
@@ -411,6 +432,15 @@ app.get('/api/karyawan/transactions', async (req, res) => {
 app.post('/api/karyawan/logout', (req, res) => {
   req.session.destroy();
   res.json({ success: true });
+});
+
+app.get('/api/hadiah', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM hadiah ORDER BY poin');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Terjadi kesalahan' });
+  }
 });
 
 // ===== ADMIN ROUTES =====
@@ -470,17 +500,19 @@ app.get('/api/admin/members', async (req, res) => {
   }
 
   try {
+    // Always fetch fresh data from database
     const result = await pool.query(`
       SELECT m.id, m.nama, m.poin, 
              COUNT(t.id)::int as txCount,
              m.createdAt
       FROM members m
       LEFT JOIN transactions t ON m.id = t.memberId
-      GROUP BY m.id
+      GROUP BY m.id, m.nama, m.poin, m.createdAt
       ORDER BY m.nama
     `);
     res.json(result.rows);
   } catch (err) {
+    console.error('Error fetching members:', err);
     res.status(500).json({ error: 'Terjadi kesalahan' });
   }
 });
@@ -510,6 +542,57 @@ app.delete('/api/admin/members/:id', async (req, res) => {
     });
   } catch (err) {
     console.error('Delete member error:', err);
+    res.status(500).json({ error: 'Terjadi kesalahan' });
+  }
+});
+
+app.get('/api/admin/karyawan', async (req, res) => {
+  if (!req.session.userId || req.session.userType !== 'admin') {
+    return res.status(401).json({ error: 'Tidak login' });
+  }
+
+  try {
+    const result = await pool.query('SELECT username, nama, createdAt FROM karyawan ORDER BY nama');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Terjadi kesalahan' });
+  }
+});
+
+app.post('/api/admin/karyawan', async (req, res) => {
+  if (!req.session.userId || req.session.userType !== 'admin') {
+    return res.status(401).json({ error: 'Tidak login' });
+  }
+
+  const { username, nama, password } = req.body;
+  
+  if (!username || !nama || !password) {
+    return res.status(400).json({ error: 'Data tidak valid' });
+  }
+
+  try {
+    await pool.query('INSERT INTO karyawan (username, nama, password) VALUES ($1, $2, $3)', [username, nama, password]);
+    res.json({ success: true, message: 'Karyawan ditambahkan' });
+  } catch (err) {
+    if (err.code === '23505') {
+      return res.status(400).json({ error: 'Username sudah ada' });
+    }
+    res.status(500).json({ error: 'Terjadi kesalahan' });
+  }
+});
+
+app.delete('/api/admin/karyawan/:username', async (req, res) => {
+  if (!req.session.userId || req.session.userType !== 'admin') {
+    return res.status(401).json({ error: 'Tidak login' });
+  }
+
+  try {
+    const result = await pool.query('DELETE FROM karyawan WHERE username = $1 RETURNING nama', [req.params.username]);
+    if (!result.rows[0]) {
+      return res.status(404).json({ error: 'Karyawan tidak ditemukan' });
+    }
+    res.json({ success: true, message: 'Karyawan dihapus' });
+  } catch (err) {
     res.status(500).json({ error: 'Terjadi kesalahan' });
   }
 });
