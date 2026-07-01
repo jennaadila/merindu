@@ -115,10 +115,18 @@ async function loadMemberTransactions() {
       const isRedeem = tx.tipe === 'redeem';
       const icon = isRedeem ? '−' : '+';
       const color = isRedeem ? 'minus' : '';
+      let dateStr = '—';
+      if (tx.tgl) {
+        const date = new Date(tx.tgl + 'T00:00:00');
+        if (!isNaN(date.getTime())) {
+          dateStr = formatDate(tx.tgl);
+        }
+      }
+      const timeStr = tx.waktu ? ' ' + tx.waktu : '';
       return `<div class="tx">
         <div class="tx-info">
           <div class="tx-nama">${isRedeem ? tx.ket : 'Belanja'}</div>
-          <div class="tx-date">${formatDate(tx.tgl)}${tx.waktu ? ' ' + tx.waktu : ''}</div>
+          <div class="tx-date">${dateStr}${timeStr}</div>
           <div class="tx-nom">${tx.nominal ? formatRp(tx.nominal) : 'Penukaran'}</div>
         </div>
         <div class="tx-poin ${color}">${icon}${Math.abs(tx.poin)}</div>
@@ -808,10 +816,9 @@ async function renderRiwayatKaryawan() {
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
       if (t.tgl) {
-        try {
+        const date = new Date(t.tgl + 'T00:00:00');
+        if (!isNaN(date.getTime())) {
           dateStr = formatDate(t.tgl);
-        } catch (e) {
-          dateStr = '—';
         }
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
@@ -976,10 +983,9 @@ async function renderAudit() {
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
       if (t.tgl) {
-        try {
+        const date = new Date(t.tgl + 'T00:00:00');
+        if (!isNaN(date.getTime())) {
           dateStr = formatDate(t.tgl);
-        } catch (e) {
-          dateStr = '—';
         }
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
