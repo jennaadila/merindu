@@ -430,6 +430,8 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
     <button class="tab" id="atab-m" onclick="aTab('m')">Member</button>
     <button class="tab" id="atab-a" onclick="aTab('a')">Audit</button>
     <button class="tab" id="atab-s" onclick="aTab('s')">Setting</button>
+    <button class="tab" id="atab-p" onclick="aTab('p')">Promo</button>
+  </div>
   </div>
 
   <!-- Ringkasan -->
@@ -505,6 +507,21 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
       <div class="field"><label>Silver threshold (poin)</label><input id="set-sv" type="number" value="100"></div>
       <div class="field"><label>Gold threshold (poin)</label><input id="set-gd" type="number" value="300"></div>
       <button class="btn btn-primary" onclick="simpanSetting()">Simpan Setting</button>
+    </div>
+  </div>
+
+  <!-- Promo -->
+  <div id="apanel-p" style="display:none">
+    <div class="card">
+      <div class="clabel">Tambah Promo Baru</div>
+      <div class="field"><label>Nama Promo</label><input id="p-nama" type="text" placeholder="Contoh: Donat Gratis"></div>
+      <div class="field"><label>Deskripsi</label><input id="p-desc" type="text" placeholder="Contoh: Tukar dengan 1 donat gratis pilihan"></div>
+      <div class="field"><label>Poin Dibutuhkan</label><input id="p-poin" type="number" min="1" placeholder="20"></div>
+      <button class="btn btn-primary" onclick="tambahPromo()">Tambah Promo</button>
+    </div>
+    <div class="card">
+      <div class="clabel">Daftar Promo</div>
+      <div id="p-list"></div>
     </div>
   </div>
 
