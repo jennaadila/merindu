@@ -107,10 +107,10 @@ async function initDB() {
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['nominalPerPoin', '25000']);
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['silverThreshold', '100']);
       await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['goldThreshold', '300']);
-      await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['adminPin', '8181']);
+      await pool.query('INSERT INTO settings (key, value) VALUES ($1, $2)', ['adminPin', '881881']);
     } else {
-      // Update admin PIN to 8181 if it exists
-      await pool.query('UPDATE settings SET value = $1 WHERE key = $2', ['8181', 'adminPin']);
+      // Update admin PIN to 881881 if it exists
+      await pool.query('UPDATE settings SET value = $1 WHERE key = $2', ['881881', 'adminPin']);
     }
 
     // Initialize default hadiah (without emojis)
@@ -592,15 +592,6 @@ app.delete('/api/admin/karyawan/:username', async (req, res) => {
       return res.status(404).json({ error: 'Karyawan tidak ditemukan' });
     }
     res.json({ success: true, message: 'Karyawan dihapus' });
-  } catch (err) {
-    res.status(500).json({ error: 'Terjadi kesalahan' });
-  }
-});
-
-app.get('/api/hadiah', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM hadiah ORDER BY poin');
-    res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: 'Terjadi kesalahan' });
   }
