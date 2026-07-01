@@ -117,7 +117,7 @@ async function loadMemberTransactions() {
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
       
-      // Handle both string and object date formats from PostgreSQL
+      // Get date string (handle both string and Date formats)
       let tglStr = tx.tgl;
       if (tx.tgl instanceof Date) {
         tglStr = tx.tgl.toISOString().split('T')[0];
@@ -126,10 +126,7 @@ async function loadMemberTransactions() {
       }
       
       if (tglStr) {
-        const date = new Date(tglStr + 'T00:00:00Z');
-        if (!isNaN(date.getTime())) {
-          dateStr = formatDate(tglStr);
-        }
+        dateStr = formatDate(tglStr);
       }
       const timeStr = tx.waktu ? ' ' + tx.waktu : '';
       return `<div class="tx">
@@ -758,29 +755,41 @@ async function loadMembersForKaryawaFilter() {
 
 function getKDateRange() {
   const today = new Date();
-  let from, to = today;
+  const todayDate = today.toISOString().split('T')[0]; // YYYY-MM-DD in UTC
+  let from, to;
 
   switch(window.kRange) {
     case 'today':
-      from = new Date(today);
+      from = new Date(todayDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'week':
-      from = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const weekAgoDate = weekAgo.toISOString().split('T')[0];
+      from = new Date(weekAgoDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'month':
-      from = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthStartDate = monthStart.toISOString().split('T')[0];
+      from = new Date(monthStartDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case '6month':
-      from = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const sixMonthsAgo = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const sixMonthsAgoDate = sixMonthsAgo.toISOString().split('T')[0];
+      from = new Date(sixMonthsAgoDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'all':
-      from = new Date('2020-01-01');
+      from = new Date('2020-01-01T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'custom':
       const dari = document.getElementById('k-tgl-dari').value;
       const sampai = document.getElementById('k-tgl-sampai').value;
-      from = dari ? new Date(dari + 'T00:00:00') : new Date('2020-01-01');
-      to = sampai ? new Date(sampai + 'T23:59:59') : today;
+      from = dari ? new Date(dari + 'T00:00:00Z') : new Date('2020-01-01T00:00:00Z');
+      to = sampai ? new Date(sampai + 'T23:59:59Z') : new Date(todayDate + 'T23:59:59Z');
       break;
   }
 
@@ -839,7 +848,7 @@ async function renderRiwayatKaryawan() {
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
       
-      // Handle both string and object date formats from PostgreSQL
+      // Get date string (handle both string and Date formats)
       let tglStr = t.tgl;
       if (t.tgl instanceof Date) {
         tglStr = t.tgl.toISOString().split('T')[0];
@@ -848,10 +857,7 @@ async function renderRiwayatKaryawan() {
       }
       
       if (tglStr) {
-        const date = new Date(tglStr + 'T00:00:00Z');
-        if (!isNaN(date.getTime())) {
-          dateStr = formatDate(tglStr);
-        }
+        dateStr = formatDate(tglStr);
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
       return `<div class="tx">
@@ -934,29 +940,41 @@ async function loadMembersForAdminFilter() {
 
 function getADateRange() {
   const today = new Date();
-  let from, to = today;
+  const todayDate = today.toISOString().split('T')[0]; // YYYY-MM-DD in UTC
+  let from, to;
 
   switch(window.aRange) {
     case 'today':
-      from = new Date(today);
+      from = new Date(todayDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'week':
-      from = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const weekAgoDate = weekAgo.toISOString().split('T')[0];
+      from = new Date(weekAgoDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'month':
-      from = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      const monthStartDate = monthStart.toISOString().split('T')[0];
+      from = new Date(monthStartDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case '6month':
-      from = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const sixMonthsAgo = new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const sixMonthsAgoDate = sixMonthsAgo.toISOString().split('T')[0];
+      from = new Date(sixMonthsAgoDate + 'T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'all':
-      from = new Date('2020-01-01');
+      from = new Date('2020-01-01T00:00:00Z');
+      to = new Date(todayDate + 'T23:59:59Z');
       break;
     case 'custom':
       const dari = document.getElementById('a-tgl-dari').value;
       const sampai = document.getElementById('a-tgl-sampai').value;
-      from = dari ? new Date(dari + 'T00:00:00') : new Date('2020-01-01');
-      to = sampai ? new Date(sampai + 'T23:59:59') : today;
+      from = dari ? new Date(dari + 'T00:00:00Z') : new Date('2020-01-01T00:00:00Z');
+      to = sampai ? new Date(sampai + 'T23:59:59Z') : new Date(todayDate + 'T23:59:59Z');
       break;
   }
 
@@ -1015,7 +1033,7 @@ async function renderAudit() {
       const color = isRedeem ? 'minus' : '';
       let dateStr = '—';
       
-      // Handle both string and object date formats from PostgreSQL
+      // Get date string (handle both string and Date formats)
       let tglStr = t.tgl;
       if (t.tgl instanceof Date) {
         tglStr = t.tgl.toISOString().split('T')[0];
@@ -1024,10 +1042,7 @@ async function renderAudit() {
       }
       
       if (tglStr) {
-        const date = new Date(tglStr + 'T00:00:00Z');
-        if (!isNaN(date.getTime())) {
-          dateStr = formatDate(tglStr);
-        }
+        dateStr = formatDate(tglStr);
       }
       const timeStr = t.waktu ? ' ' + t.waktu : '';
       return `<div class="tx">
