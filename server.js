@@ -415,7 +415,7 @@ app.get('/api/karyawan/transactions', async (req, res) => {
   try {
     // Show all transactions, not just ones by this karyawan
     const result = await pool.query(`
-      SELECT t.*, m.nama as memberNama
+      SELECT t.*, t.memberId AS "memberId", m.nama AS "memberNama"
       FROM transactions t
       JOIN members m ON t.memberId = m.id
       ORDER BY t.tgl DESC, t.waktu DESC
@@ -433,7 +433,7 @@ app.get('/api/admin/transactions', async (req, res) => {
 
   try {
     const result = await pool.query(`
-      SELECT t.*, m.nama as memberNama
+      SELECT t.*, t.memberId AS "memberId", m.nama AS "memberNama"
       FROM transactions t
       JOIN members m ON t.memberId = m.id
       ORDER BY t.tgl DESC, t.waktu DESC
@@ -517,8 +517,8 @@ app.get('/api/admin/members', async (req, res) => {
   try {
     // Always fetch fresh data from database
     const result = await pool.query(`
-      SELECT m.id, m.nama, m.poin, 
-             COUNT(t.id)::int as txCount,
+      SELECT m.id, m.nama, m.poin,
+             COUNT(t.id)::int AS "txCount",
              m.createdAt
       FROM members m
       LEFT JOIN transactions t ON m.id = t.memberId
