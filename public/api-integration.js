@@ -511,8 +511,9 @@ function formatDate(dateStr) {
     // If it's a Date object, convert to ISO string first
     dateObj = new Date(dateStr.toISOString().split('T')[0] + 'T00:00:00Z');
   } else if (typeof dateStr === 'string') {
-    // Parse as UTC to preserve the date as-is (treat as WIB/Jakarta time)
-    dateObj = new Date(dateStr + 'T00:00:00Z');
+    // Strip any time portion first (server may send a full ISO timestamp)
+    // then parse as UTC to preserve the date as-is (treat as WIB/Jakarta time)
+    dateObj = new Date(dateStr.split('T')[0] + 'T00:00:00Z');
   } else {
     return '—';
   }
@@ -806,7 +807,7 @@ async function renderRiwayatKaryawan() {
     const historyType = window.kHistoryType;
 
     let filtered = transactions.filter(t => {
-      const tDate = new Date(t.tgl + 'T00:00:00Z');
+      const tDate = new Date(String(t.tgl).split('T')[0] + 'T00:00:00Z');
       if (tDate < range.from || tDate > range.to) return false;
       if (memberId && t.memberId !== memberId) return false;
       if (historyType === 'tambah' && t.tipe !== 'tambah') return false;
@@ -991,7 +992,7 @@ async function renderAudit() {
     const historyType = window.aHistoryType;
 
     let filtered = transactions.filter(t => {
-      const tDate = new Date(t.tgl + 'T00:00:00Z');
+      const tDate = new Date(String(t.tgl).split('T')[0] + 'T00:00:00Z');
       if (tDate < range.from || tDate > range.to) return false;
       if (memberId && t.memberId !== memberId) return false;
       if (historyType === 'tambah' && t.tipe !== 'tambah') return false;
