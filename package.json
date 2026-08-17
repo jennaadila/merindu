@@ -1,7 +1,7 @@
 {
-  "name": "merindu-donat-membership",
+  "name": "warung-rajasa-membership",
   "version": "1.0.0",
-  "description": "Merindu Donat Membership Management System",
+  "description": "Warung Rajasa Membership Management System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
