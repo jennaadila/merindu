@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'merindu-membership-secret-key',
+  secret: process.env.SESSION_SECRET || 'warung-rajasa-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: { 
@@ -134,9 +134,9 @@ async function initDB() {
     // Initialize default hadiah (without emojis)
     const hadiahCount = await pool.query('SELECT COUNT(*) FROM hadiah');
     if (parseInt(hadiahCount.rows[0].count) === 0) {
-      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Donat Gratis', 'Tukar dengan 1 donat gratis pilihan', 20]);
-      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Setengah Lusin Donat', '6 donat dengan diskon khusus', 50]);
-      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Lusin Donat', '12 donat dengan harga spesial', 100]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Menu Gratis', 'Tukar dengan 1 menu gratis pilihan', 20]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Diskon Spesial', 'Diskon khusus untuk pembelian berikutnya', 50]);
+      await pool.query('INSERT INTO hadiah (nama, "desc", poin) VALUES ($1, $2, $3)', ['Paket Hemat', 'Paket spesial dengan harga hemat', 100]);
     }
 
     // Initialize default karyawan
@@ -715,7 +715,7 @@ app.post('/api/admin/logout', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`========================================`);
-  console.log(`Merindu Donat Membership running on port ${PORT}`);
+  console.log(`Warung Rajasa Membership running on port ${PORT}`);
   console.log(`DATABASE_URL: ${process.env.DATABASE_URL ? 'Connected' : 'NOT SET'}`);
   console.log(`========================================`);
 });
