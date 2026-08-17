@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Merindu Donat</title>
+<title>Warung Rajasa</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --brown:#2D1B0A; --caramel:#E67E22; --glaze:#F39C12; --pink:#E74C3C;
-  --cream:#FBF8F3; --cream2:#F5F0E8; --white:#FFFFFF;
-  --muted:#8B7355; --border:#E8DCC8;
+  --brown:#3A1B12; --caramel:#B5432A; --glaze:#E8B923; --pink:#C0392B;
+  --cream:#FBF3E0; --cream2:#F5E8D0; --white:#FFFFFF;
+  --muted:#8B6F52; --border:#E5D3B0;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh;line-height:1.6;}
@@ -72,7 +72,7 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
 
 /* POIN HERO */
 .poin-hero{background:linear-gradient(135deg,var(--brown),#4A2C15);border-radius:12px;padding:20px 16px;color:#fff;margin-bottom:12px;position:relative;overflow:hidden;}
-.poin-hero::after{content:'🍩';position:absolute;right:-6px;top:-6px;font-size:64px;opacity:.1;}
+.poin-hero::after{content:'🍽️';position:absolute;right:-6px;top:-6px;font-size:64px;opacity:.1;}
 .poin-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.6;margin-bottom:2px;}
 .poin-nama{font-family:'Fraunces',serif;font-size:16px;margin-bottom:10px;}
 .poin-angka{font-family:'Fraunces',serif;font-size:44px;font-weight:700;color:var(--glaze);line-height:1;}
@@ -202,8 +202,8 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
 <!-- ===== LANDING ===== -->
 <div class="page show" id="pg-landing">
   <div class="hero">
-    <div class="donut" style="background:none;box-shadow:none;"><img src="Logo Merindu.png" alt="Logo Merindu" style="width:100%;height:auto;max-width:130px;"></div>
-    <h1>Selamat datang di<br><em>Merindu Donat</em></h1>
+    <div class="donut" style="background:none;box-shadow:none;"><img src="Logo Rajasa.png" alt="Logo Warung Rajasa" style="width:100%;height:auto;max-width:130px;"></div>
+    <h1>Selamat datang di<br><em>Warung Rajasa</em></h1>
     <p>Kumpulkan poin setiap pembelian.<br>Tukar dengan hadiah spesial.</p>
     <button class="btn btn-primary" onclick="showPage('login-member')">Masuk sebagai Member</button>
     <button class="btn btn-secondary" onclick="showPage('daftar')">Daftar Member Baru</button>
@@ -423,7 +423,7 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
 <div class="page" id="pg-admin">
   <div class="band dark">
     <h2>Super Admin</h2>
-    <p>Merindu Donat Membership</p>
+    <p>Warung Rajasa Membership</p>
   </div>
   <div class="tabs">
     <button class="tab on" id="atab-r" onclick="aTab('r')">Ringkasan</button>
@@ -513,8 +513,8 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
   <div id="apanel-p" style="display:none">
     <div class="card">
       <div class="clabel">Tambah Promo Baru</div>
-      <div class="field"><label>Nama Promo</label><input id="p-nama" type="text" placeholder="Contoh: Donat Gratis"></div>
-      <div class="field"><label>Deskripsi</label><input id="p-desc" type="text" placeholder="Contoh: Tukar dengan 1 donat gratis pilihan"></div>
+      <div class="field"><label>Nama Promo</label><input id="p-nama" type="text" placeholder="Contoh: Menu Gratis"></div>
+      <div class="field"><label>Deskripsi</label><input id="p-desc" type="text" placeholder="Contoh: Tukar dengan 1 menu gratis pilihan"></div>
       <div class="field"><label>Poin Dibutuhkan</label><input id="p-poin" type="number" min="1" placeholder="20"></div>
       <button class="btn btn-primary" onclick="tambahPromo()">Tambah Promo</button>
     </div>
