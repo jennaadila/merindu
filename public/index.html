@@ -131,6 +131,9 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
 .band.dark{background:#1A0F05;}
 .band h2{font-family:'Fraunces',serif;font-size:18px;color:#fff;}
 .band p{font-size:11px;opacity:.8;margin-top:2px;}
+@media (max-width: 440px) {
+  .band{padding-left:58px;}
+}
 
 /* STAT GRID */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
@@ -202,8 +205,7 @@ h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px
 <!-- ===== LANDING ===== -->
 <div class="page show" id="pg-landing">
   <div class="hero">
-    <div class="donut" style="background:none;box-shadow:none;"><img src="Logo Rajasa.png" alt="Logo Warung Rajasa" style="width:100%;height:auto;max-width:130px;"></div>
-    <h1>Selamat datang di<br><em>Warung Rajasa</em></h1>
+    <div class="donut" style="background:none;box-shadow:none;"><img src="Logo Rajasa.png" alt="Logo Warung Rajasa" style="width:100%;height:auto;max-width:220px;"></div>    <h1>Selamat datang di<br><em>Warung Rajasa</em></h1>
     <p>Kumpulkan poin setiap pembelian.<br>Tukar dengan hadiah spesial.</p>
     <button class="btn btn-primary" onclick="showPage('login-member')">Masuk sebagai Member</button>
     <button class="btn btn-secondary" onclick="showPage('daftar')">Daftar Member Baru</button>
